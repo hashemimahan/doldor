@@ -1,0 +1,3 @@
+.active {
+    @apply bg-doldor_orange border border-slate-900;
+}

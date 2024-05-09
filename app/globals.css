@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --background-primary: #FFFFFF;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: var(--background-primary);
+}
+/*body:has(.x) {*/
+/*  overflow: hidden;*/
+/*}*/
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .box {
+    @apply bg-doldor_orange rounded-2xl p-2 cursor-pointer;
+  }
+  .signUp {
+    @apply text-2xl;
+  }
+  .animation {
+    &:hover {
+      animation: pulse 1s;
+    }
+  }
+  @keyframes pulse {
+    0% {
+      /*-moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);*/
+      box-shadow: 0 0 0 0 #ef8f6e;
+    }
+    /*70% {
+      !*-moz-box-shadow: 0 0 0 10px rgba(204,169,44, 0);*!
+      box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    }*/
+    100% {
+      /*-moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0);*/
+      box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+  }
+}
+
+
+table tfoot tr:nth-child(2){
+  background-color: #D2D2D2;
+  
+}
+table, th:nth-child(4) {
+  width: 50%;
+}
+table tbody tr:nth-child(odd){
+  background-color: #BFBDBD;
+}
+table, th, td{
+  border: 2px solid black;
+  border-collapse: collapse;
+      
+}
+table td,table th {
+  text-align: center;
+  padding: 18px;
+      
+}
+tbody tr td:nth-child(1), tfoot th:nth-child(1){
+color: red;
+}
+tbody tr td:nth-child(1){
+text-decoration: underline;
+}
+tbody tr td:nth-child(5),tfoot th:nth-child(2){
+color: blue;
+}
+
+caption {
+  background-color: #3FC398;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 26px;
+}

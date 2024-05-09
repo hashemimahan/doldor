@@ -1,0 +1,23 @@
+.layout {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 4rem 40rem;
+    grid-template-areas: 
+        "box1 box2"
+        "box3 box2"
+    ;
+    height: 50vh;
+    overflow-x: clip;
+}
+.box1 {
+    grid-area: box1;
+    background-color: #fc112f;
+}
+.box2 {
+    grid-area: box2;
+    background-color: #0c112f;
+}
+.box3 {
+    grid-area: box3;
+    background-color: #5c110f;
+}
