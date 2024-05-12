@@ -16,6 +16,8 @@ const Form = ({ factorId }) => {
 	console.log(findCustomerId && findCustomerId[0]) */
 	let products = existingFactor[+factorId-1].products;
 
+	console.log(existingFactor[+factorId-1].totalPrice);
+
 	const onChangeProductHandler = (code, action) => {
 		let payload = {
 			customerId: +factorId,
@@ -48,20 +50,6 @@ const Form = ({ factorId }) => {
 				</thead>
 
 				<tbody>
-				{/* {findCustomerId && findCustomerId.customer.map(item => {
-			return <tr key={item.id}>
-				<td>{item.productsDetail.select}</td>
-				<td>{item.productsDetail.code}</td>
-				<td>{item.productsDetail.barCode}</td>
-				<td>{item.productsDetail.product}</td>
-				<td>{item.productsDetail.number}</td>
-				<td>{item.productsDetail.price}</td>
-				<td>{item.productsDetail.discount}</td>
-				<td>{item.productsDetail.totalAmount}</td>
-				<td>{item.productsDetail.stock}</td>
-				<td>{item.productsDetail.remove}</td>
-			</tr>
-		})} */}
 				{products.map(item => {
 					return (
 						<tr key={"123456789"}>
@@ -90,8 +78,16 @@ const Form = ({ factorId }) => {
 				</tbody>
 				<tfoot>
 				<tr>
-					<th>{10000}</th>
-					<th colSpan="4">761.000 تومان</th>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+					<td>{existingFactor[+factorId-1].totalPrice}</td>
+					<td>123</td>
+					<td>123</td>
 				</tr>
 				<tr>
 					<th> تعداد نوع محصول</th>
@@ -104,16 +100,16 @@ const Form = ({ factorId }) => {
 			<button type={"button"} className={"text-4xl font-bold border p-4"} onClick={() => {
 				let newItem = {
 					customerId: +factorId,
-					productCode: 1234656,
+					productCode: 9875463110,
 					productsDetail: {
 						select: <input type={"checkbox"}/>,
-						code: 1234656,
+						code: 9875463110,
 						barCode: 12345667,
 						product: "سیروپیاز",
 						number: 1,
 						price: 100000,
-						discount: 4000,
-						totalAmount: 2500,
+						discount: 15000,
+						totalAmount: 85000,
 						stock: 5,
 						remove: <FaTrashAlt/>,
 					},
@@ -133,9 +129,9 @@ const Form = ({ factorId }) => {
 						barCode: 12345667,
 						product: "خیار",
 						number: 1,
-						price: 600,
-						discount: 700,
-						totalAmount: 12500,
+						price: 50000,
+						discount: 5000,
+						totalAmount: 45000,
 						stock: 5,
 						remove: <FaTrashAlt/>,
 					},
@@ -155,9 +151,9 @@ const Form = ({ factorId }) => {
 						barCode: 12345667,
 						product: "ماست",
 						number: 1,
-						price: 85000,
-						discount: 1000,
-						totalAmount: 85000,
+						price: 90000,
+						discount: 10000,
+						totalAmount: 80000,
 						stock: 7,
 						remove: <FaTrashAlt/>,
 					},

@@ -15,13 +15,15 @@ const initialState = {
                     barCode: 12345667,
                     product: "فندک",
                     number: 1,
-                    price: 2500,
-                    discount: 8000,
-                    totalAmount: 0,
+                    price: 12500,
+                    discount: 2500,
+                    totalAmount: 10000,
                     stock: 2,
                     remove: <FaTrashAlt />,
                 }
             ],
+            totalPrice: 10000,
+            totalDiscount: 2500,
         },
         {
             customerId: 2,
@@ -33,12 +35,14 @@ const initialState = {
                     product: "سوجوق",
                     number: 1,
                     price: 17500,
-                    discount: 8000,
-                    totalAmount: 0,
+                    discount: 2500,
+                    totalAmount: 15000,
                     stock: 2,
                     remove: <FaTrashAlt />,
                 }
-            ]
+            ],
+            totalPrice: 15000,
+            totalDiscount: 2500,
         },
         {
             customerId: 3,
@@ -49,15 +53,15 @@ const initialState = {
                     barCode: 12345667,
                     product: "تخم مرغ",
                     number: 1,
-                    price: 75000,
-                    discount: 8000,
-                    totalAmount: 0,
+                    price: 100000,
+                    discount: 10000,
+                    totalAmount: 90000,
                     stock: 2,
                     remove: <FaTrashAlt />,
                 }
             ],
-            totalPrice: 0,
-            totalDiscount: 0,
+            totalPrice: 90000,
+            totalDiscount: 10000,
         },
     ],
 }
@@ -83,11 +87,10 @@ export const salesInvoice = createSlice({
                     stock: existedProductItem.stock - 1,
                 }
                 state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
-                /* از اینجا موند*/
-                /* ******************** */
-                // state.customers[findCustomer]
+                state.customers[findCustomer].totalPrice += state.customers[findCustomer].products[existedProductItemIndex].price;
             } else {
                 state.customers[findCustomer].products.push(action.payload.productsDetail);
+                state.customers[findCustomer].totalPrice += action.payload.productsDetail.price;
             }
         },
         increase: (state, action) => {
@@ -107,6 +110,7 @@ export const salesInvoice = createSlice({
                 stock: existedProductItem.stock - 1,
             }
             state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
+            state.customers[findCustomer].totalPrice += state.customers[findCustomer].products[existedProductItemIndex].price;
         },
         decrease: (state, action) => {
             const customers = current(state.customers)
@@ -125,18 +129,20 @@ export const salesInvoice = createSlice({
                 stock: existedProductItem.stock + 1,
             }
             state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
+            state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].price;
         },
         removeProductItem: (state, action) => {
             const customers = current(state.customers)
             let findCustomer = customers.findIndex(item => item.customerId === action.payload.customerId);
             let existedProductItemIndex = state.customers[findCustomer].products.findIndex(item => item.code === action.payload.productCode);
+            state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].totalAmount;
             state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
         },
         removeProduct: (state, action) => {
             const customers = current(state.customers)
             let findCustomerIndex = customers.findIndex(item => item.customerId === +action.payload);
             let findCustomer = customers.find(item => item.customerId === +action.payload);
-            state.customers.splice(findCustomerIndex, 1)
+            state.customers.splice(findCustomerIndex, 1);
         },
         addCustomers: (state, action) => {
             state.customers.push(action.payload);
