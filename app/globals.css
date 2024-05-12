@@ -36,6 +36,9 @@ body {
       animation: pulse 1s;
     }
   }
+  .tableRows {
+    @apply text-2xl font-iranYekan font-black;
+  }
   @keyframes pulse {
     0% {
       /*-moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);*/

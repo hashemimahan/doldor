@@ -7,6 +7,7 @@ import {removeReceiptItem} from "@/reducers/sales-invoice-slice";
 import {useParams, usePathname, useRouter} from "next/navigation";
 import { delay } from '@/libs/utility';
 import classes from "./TabItem.module.css";
+import {removeProduct} from "@/reducers/sales-invoice";
 
 const TabItems = ({title, cast, onRemove, id}) => {
     const {receiptId} = useParams();
@@ -23,6 +24,7 @@ const TabItems = ({title, cast, onRemove, id}) => {
                 <button className={"rotate-45 text-center content-center px-2 hover:text-doldor_orange"}
                         onClick={async () => {
                             dispatch(removeReceiptItem(id));
+                            dispatch(removeProduct(receiptId))
                             let x = item.length-1;
                             router.push(`/receipt/${x.toString()}`);
                         }}>

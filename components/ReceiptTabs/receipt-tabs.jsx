@@ -5,7 +5,7 @@ import TabItems from "@/components/ReceiptTabs/TabItems";
 import {useParams, useRouter} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
 import {addReceiptItem} from "@/reducers/sales-invoice-slice";
-import {addCustomers} from "@/reducers/sales-invoice";
+import {addCustomers, removeProduct} from "@/reducers/sales-invoice";
 
 export const items = [
     {
@@ -30,7 +30,6 @@ const ReceiptTabs = () => {
     const {receiptId} = useParams();
     const router = useRouter();
     const items = useSelector(state => state.counter.items);
-
 
     const onAddReceiptItemHandler = () => {
         const newItem = {
@@ -64,7 +63,7 @@ const ReceiptTabs = () => {
                 }
                 dispatch(addReceiptItem(newItem))
                 dispatch(addCustomers(newCustomer))
-                router.replace(`/receipt/${newItem.id}`);
+                router.push(`/receipt/${newItem.id}`);
             }}>
                 <FaPlus size={"1.6rem"}/>
             </button>
