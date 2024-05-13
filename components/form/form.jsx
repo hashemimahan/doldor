@@ -9,8 +9,7 @@ import {
 import React, { Fragment, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import Select from "@/components/utilities/select";
 
 const headings = [
   "انتخاب",
@@ -30,41 +29,8 @@ const options = [
   { value: "number", label: "عدد", color: "#f00" },
   { value: "kilo", label: "کیلو", color: "#0f0" },
 ];
-
-const colorStyles = {
-    control: (styles) => ({ ...styles, backgroundColor: "#ffffff99" }),
-    /* option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return { ...styles, color: data.color };
-    },
-    multiValue: (styles, { data }) => {
-      return {
-        ...styles,
-        backgroundColor: data.color,
-        color: "#fff",
-      };
-    },
-    multiValueLabel: (styles, { data }) => {
-      return {
-        ...styles,
-        color: "#fff",
-      };
-    },
-    multiValueRemove: (styles, { data }) => {
-      return {
-        ...styles,
-        color: "#fff",
-        cursor: "pointer",
-        ":hover": {
-          color: "#fff",
-        },
-      };
-    }, */
-  };
-
-const animatedComponents = makeAnimated();
-
 const Form = ({ factorId }) => {
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState(null);
   let existingFactor = useSelector((state) => state.salesInvoice.customers);
   let dispatch = useDispatch();
   let products = existingFactor[+factorId - 1].products;
@@ -96,10 +62,9 @@ const Form = ({ factorId }) => {
     dispatch(removeAllProducts(payload));
   };
 
-  const handleChange = (selectedOption, actionMeta) => {
-    // console.log("handleChange", selectedOption, actionMeta);
-	setSelectedValue(selectedOption.value);
-  };
+  const onSelectChangeHandler = (data) => {
+	setSelectedValue(data)
+  }
 
   return (
     <>
@@ -123,15 +88,8 @@ const Form = ({ factorId }) => {
                   <td className={"tableRows"}>
                     <p className={"w-[20rem]"}>{item.product}</p>
                   </td>
-                  <td>
-                    <Select
-                      options={options}
-                      className="w-[8rem] font-iranYekan font-bold"
-                      isRtl
-                      onChange={handleChange}
-                      components={animatedComponents}
-					  styles={colorStyles}
-                    />
+                  <td className="relative">
+                    <Select options={options} onSelect={onSelectChangeHandler}/>
                   </td>
                   <td
                     className={
@@ -179,7 +137,7 @@ const Form = ({ factorId }) => {
               <td>1235</td>
               <td>
                 <p className="font-iranYekan font-black text-xl">وزنی: {100}</p>
-                <p className="font-iranYekan font-black text-xl">عددی: {50}</p>
+                <p className="font-iranYekan font-black text-xl">عددی: {existingFactor[+factorId-1].totalNumber >= 0 ? existingFactor[+factorId-1].totalNumber : 0}</p>
               </td>
               <td className="text-2xl font-iranYekanRegular font-black">
                 {existingFactor[+factorId - 1].totalAmount}

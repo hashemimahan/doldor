@@ -27,6 +27,7 @@ const initialState = {
             totalPrice: 10000,
             totalDiscount: 2500,
             totalAmount: 12500,
+            totalNumber: 1,
         },
         {
             customerId: 2,
@@ -49,6 +50,7 @@ const initialState = {
             totalPrice: 15000,
             totalDiscount: 2500,
             totalAmount: 17500,
+            totalNumber: 1,
         },
         {
             customerId: 3,
@@ -71,6 +73,32 @@ const initialState = {
             totalPrice: 90000,
             totalDiscount: 10000,
             totalAmount: 100000,
+            totalNumber: 1,
+        },
+        {
+            customerId: 4,
+            products: [
+                {
+                    select: <input type={"checkbox"}/>,
+                    code: 1234656,
+                    barCode: 12345667,
+                    product: "تخم مرغ",
+                    number: 1,
+                    weight: 1,
+                    price: 100000,
+                    pricePerOne: 100000,
+                    discount: 10000,
+                    discountPerOne: 10000,
+                    totalAmount: 90000,
+                    stock: 2,
+                    remove: <FaTrashAlt />,
+                }
+            ],
+            totalPrice: 90000,
+            totalDiscount: 10000,
+            totalAmount: 100000,
+            totalNumber: 1,
+            totalWeight: 1,
         },
     ],
 }
@@ -84,13 +112,13 @@ export const salesInvoice = createSlice({
             let existedProductItemIndex = state.customers[findCustomer].products.findIndex(item => item.code === action.payload.productCode);
             let existedProductItem = state.customers[findCustomer].products[existedProductItemIndex];
             if (existedProductItem && existedProductItem?.stock === 0 ) {
-                toast.error('کالا در انبار موجود نمی باشد')
+                toast.error('کالا در انبار موجود نمی باشد');
                 return
             }
             if (existedProductItem) {
                 const updatedProductItem = {
                     ...existedProductItem,
-                    number: existedProductItem.number + action.payload.productsDetail.number,
+                    number: !!existedProductItem.number + action.payload.productsDetail.number && (existedProductItem.number + action.payload.productsDetail.number),
                     discount: existedProductItem.discount + existedProductItem.discountPerOne,
                     totalAmount: existedProductItem.totalAmount + (action.payload.productsDetail.price - action.payload.productsDetail.discount),
                     stock: existedProductItem.stock - 1,
@@ -105,6 +133,7 @@ export const salesInvoice = createSlice({
                 state.customers[findCustomer].totalDiscount += action.payload.productsDetail.discountPerOne;
                 state.customers[findCustomer].totalAmount += action.payload.productsDetail.pricePerOne;
             }
+            state.customers[findCustomer].totalNumber++
         },
         increase: (state, action) => {
             const customers = current(state.customers)
@@ -126,6 +155,7 @@ export const salesInvoice = createSlice({
             state.customers[findCustomer].totalPrice += (existedProductItem.price - existedProductItem.discountPerOne);
             state.customers[findCustomer].totalDiscount += existedProductItem.discountPerOne;
             state.customers[findCustomer].totalAmount += existedProductItem.pricePerOne;
+            state.customers[findCustomer].totalNumber++
         },
         decrease: (state, action) => {
             const customers = current(state.customers)
@@ -136,6 +166,7 @@ export const salesInvoice = createSlice({
                 state.customers[findCustomer].totalPrice -= existedProductItem.totalAmount;
                 state.customers[findCustomer].totalDiscount -= existedProductItem.discount;
                 state.customers[findCustomer].totalAmount -= existedProductItem.pricePerOne;
+                state.customers[findCustomer].totalNumber--
                 state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
                 return
             }
@@ -151,6 +182,7 @@ export const salesInvoice = createSlice({
             state.customers[findCustomer].totalPrice -= (existedProductItem.price - existedProductItem.discountPerOne);
             state.customers[findCustomer].totalDiscount -= existedProductItem.discountPerOne;
             state.customers[findCustomer].totalAmount -= existedProductItem.pricePerOne;
+            state.customers[findCustomer].totalNumber--
 
         },
         removeProductItem: (state, action) => {
