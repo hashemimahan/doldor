@@ -71,10 +71,12 @@ table, th, td{
   border-collapse: collapse;
       
 }
-table td,table th {
+table td,table th:not(:first-child) {
   text-align: center;
-  padding: 18px;
-      
+  &:not(:first-child, :nth-child(10), :nth-child(5)) {
+    padding-inline: 18px;
+    padding-block: 10px;
+  }
 }
 tbody tr td:nth-child(1), tfoot th:nth-child(1){
 color: red;
@@ -82,8 +84,10 @@ color: red;
 tbody tr td:nth-child(1){
 text-decoration: underline;
 }
-tbody tr td:nth-child(5),tfoot th:nth-child(2){
+tbody tr td:nth-child(6),tfoot th:nth-child(2){
 color: blue;
+/* outline: 2px solid black;
+outline-offset: -10px; */
 }
 
 caption {
