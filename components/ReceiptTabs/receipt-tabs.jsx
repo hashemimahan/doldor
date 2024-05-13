@@ -60,6 +60,8 @@ const ReceiptTabs = () => {
                 let newCustomer = {
                     customerId: newItem.id,
                     products: [],
+                    totalPrice: 0,
+                    totalDiscount: 0,
                 }
                 dispatch(addReceiptItem(newItem))
                 dispatch(addCustomers(newCustomer))

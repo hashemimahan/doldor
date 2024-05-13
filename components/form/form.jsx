@@ -1,6 +1,6 @@
 'use client';
-import {addNewProduct, decrease, increase, removeProductItem} from "@/reducers/sales-invoice";
-import React from "react";
+import {addNewProduct, decrease, increase, removeAllProducts, removeProductItem} from "@/reducers/sales-invoice";
+import React, { Fragment } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -38,13 +38,20 @@ const Form = ({ factorId }) => {
 		dispatch(removeProductItem(payload))
 	}
 
+	const onRemoveAllProductHandler = () => {
+		let payload = {
+			customerId: +factorId,
+		}
+		dispatch(removeAllProducts(payload));
+	}
+
   return (
     <>
 		<form className="w-full h-auto" dir={"rtl"}>
 			<table dir="rtl" style={{margin: "15px auto", width: "96%"}}>
 				<thead>
 				<tr>
-					{headings.map(item => <th key={crypto.randomUUID()}>{item}</th>)}
+					{headings.map((item, index) => <th key={crypto.randomUUID()} colSpan={index === 3 ? 3 : 1}>{item}</th>)}
 				</tr>
 
 				</thead>
@@ -56,7 +63,7 @@ const Form = ({ factorId }) => {
 							<td className={"tableRows"}>{item.select}</td>
 							<td className={"tableRows"}>{item.code}</td>
 							<td className={"tableRows"}>{item.barCode}</td>
-							<td className={"tableRows"}>{item.product}</td>
+							<td className={"tableRows"} colSpan={3}>{item.product}</td>
 							<td className={"flex border-none outline-none gap-4 text-4xl font-iranYekan justify-center items-center"}>
 								<button type={"button"}
 										onClick={() => onChangeProductHandler(item.code, "increase")}>+
@@ -78,20 +85,81 @@ const Form = ({ factorId }) => {
 				</tbody>
 				<tfoot>
 				<tr>
-					<td>123</td>
-					<td>123</td>
-					<td>123</td>
-					<td>123</td>
-					<td>123</td>
-					<td>123</td>
-					<td>123</td>
-					<td>{existingFactor[+factorId-1].totalPrice}</td>
-					<td>123</td>
-					<td>123</td>
+					<td>{false}</td>
+					<td>{false}</td>
+					<td>{false}</td>
+					<td colSpan={3}>{false}</td>
+					<td>{false}</td>
+					<td className="text-2xl font-iranYekanRegular font-black">{existingFactor[+factorId-1].totalAmount}</td>
+					<td className="text-2xl font-iranYekanRegular font-black">{existingFactor[+factorId-1].totalDiscount}</td>
+					<td className="text-2xl font-iranYekanRegular font-black">{existingFactor[+factorId-1].totalPrice}</td>
+					<td>{false}</td>
+					<td className="tableRows cursor-pointer" onClick={onRemoveAllProductHandler}>
+						<FaTrashAlt/>
+					</td>
 				</tr>
 				<tr>
-					<th> تعداد نوع محصول</th>
-					<th colSpan="4">5 عدد</th>
+					<td colSpan={2} className="p-0">
+						<button className="w-full h-full">انتقال به مانده مشتری</button>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<button className="w-full h-full">انتقال به انبار</button>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<button className="w-full h-full">انتقال به بیرون</button>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<p className="w-full h-full">نام مشتری</p>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<p className="w-full h-full">توضیحات</p>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<p className="w-full h-full">آدرس</p>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+				</tr>
+				<tr>
+					<td colSpan={2} className="p-0">
+						<p className="w-full h-full">امتیاز مشتری</p>
+					</td>
+					<td>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
+					<td colSpan={2}>123456789</td>
 				</tr>
 
 				</tfoot>
@@ -108,7 +176,9 @@ const Form = ({ factorId }) => {
 						product: "سیروپیاز",
 						number: 1,
 						price: 100000,
+						pricePerOne: 100000,
 						discount: 15000,
+						discountPerOne: 15000,
 						totalAmount: 85000,
 						stock: 5,
 						remove: <FaTrashAlt/>,
@@ -130,7 +200,9 @@ const Form = ({ factorId }) => {
 						product: "خیار",
 						number: 1,
 						price: 50000,
+						pricePerOne: 50000,
 						discount: 5000,
+						discountPerOne: 5000,
 						totalAmount: 45000,
 						stock: 5,
 						remove: <FaTrashAlt/>,
@@ -152,7 +224,9 @@ const Form = ({ factorId }) => {
 						product: "ماست",
 						number: 1,
 						price: 90000,
+						pricePerOne: 90000,
 						discount: 10000,
+						discountPerOne: 10000,
 						totalAmount: 80000,
 						stock: 7,
 						remove: <FaTrashAlt/>,

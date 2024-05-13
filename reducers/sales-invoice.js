@@ -16,7 +16,9 @@ const initialState = {
                     product: "فندک",
                     number: 1,
                     price: 12500,
+                    pricePerOne: 12500,
                     discount: 2500,
+                    discountPerOne: 10000,
                     totalAmount: 10000,
                     stock: 2,
                     remove: <FaTrashAlt />,
@@ -24,6 +26,7 @@ const initialState = {
             ],
             totalPrice: 10000,
             totalDiscount: 2500,
+            totalAmount: 12500,
         },
         {
             customerId: 2,
@@ -35,7 +38,9 @@ const initialState = {
                     product: "سوجوق",
                     number: 1,
                     price: 17500,
+                    pricePerOne: 17500,
                     discount: 2500,
+                    discountPerOne: 10000,
                     totalAmount: 15000,
                     stock: 2,
                     remove: <FaTrashAlt />,
@@ -43,6 +48,7 @@ const initialState = {
             ],
             totalPrice: 15000,
             totalDiscount: 2500,
+            totalAmount: 17500,
         },
         {
             customerId: 3,
@@ -54,7 +60,9 @@ const initialState = {
                     product: "تخم مرغ",
                     number: 1,
                     price: 100000,
+                    pricePerOne: 100000,
                     discount: 10000,
+                    discountPerOne: 10000,
                     totalAmount: 90000,
                     stock: 2,
                     remove: <FaTrashAlt />,
@@ -62,6 +70,7 @@ const initialState = {
             ],
             totalPrice: 90000,
             totalDiscount: 10000,
+            totalAmount: 100000,
         },
     ],
 }
@@ -82,15 +91,19 @@ export const salesInvoice = createSlice({
                 const updatedProductItem = {
                     ...existedProductItem,
                     number: existedProductItem.number + action.payload.productsDetail.number,
-                    totalAmount: existedProductItem.totalAmount + action.payload.productsDetail.price,
-                    discount: existedProductItem.discount + action.payload.productsDetail.discount,
+                    discount: existedProductItem.discount + existedProductItem.discountPerOne,
+                    totalAmount: existedProductItem.totalAmount + (action.payload.productsDetail.price - action.payload.productsDetail.discount),
                     stock: existedProductItem.stock - 1,
                 }
                 state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
-                state.customers[findCustomer].totalPrice += state.customers[findCustomer].products[existedProductItemIndex].price;
+                state.customers[findCustomer].totalPrice += (action.payload.productsDetail.price - action.payload.productsDetail.discount);
+                state.customers[findCustomer].totalDiscount += action.payload.productsDetail.discountPerOne;
+                state.customers[findCustomer].totalAmount += action.payload.productsDetail.pricePerOne;
             } else {
                 state.customers[findCustomer].products.push(action.payload.productsDetail);
-                state.customers[findCustomer].totalPrice += action.payload.productsDetail.price;
+                state.customers[findCustomer].totalPrice += (action.payload.productsDetail.price - action.payload.productsDetail.discount);
+                state.customers[findCustomer].totalDiscount += action.payload.productsDetail.discountPerOne;
+                state.customers[findCustomer].totalAmount += action.payload.productsDetail.pricePerOne;
             }
         },
         increase: (state, action) => {
@@ -105,12 +118,14 @@ export const salesInvoice = createSlice({
             const updatedProductItem = {
                 ...existedProductItem,
                 number: existedProductItem.number + 1,
-                totalAmount: existedProductItem.totalAmount + existedProductItem.price,
-                discount: existedProductItem.discount * 2,
+                discount: existedProductItem.discount + existedProductItem.discountPerOne,
+                totalAmount: existedProductItem.totalAmount + (existedProductItem.price - existedProductItem.discountPerOne),
                 stock: existedProductItem.stock - 1,
             }
             state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
-            state.customers[findCustomer].totalPrice += state.customers[findCustomer].products[existedProductItemIndex].price;
+            state.customers[findCustomer].totalPrice += (existedProductItem.price - existedProductItem.discountPerOne);
+            state.customers[findCustomer].totalDiscount += existedProductItem.discountPerOne;
+            state.customers[findCustomer].totalAmount += existedProductItem.pricePerOne;
         },
         decrease: (state, action) => {
             const customers = current(state.customers)
@@ -118,24 +133,32 @@ export const salesInvoice = createSlice({
             let existedProductItemIndex = state.customers[findCustomer].products.findIndex(item => item.code === action.payload.productCode);
             let existedProductItem = state.customers[findCustomer].products[existedProductItemIndex];
             if (existedProductItem.number === 1) {
+                state.customers[findCustomer].totalPrice -= existedProductItem.totalAmount;
+                state.customers[findCustomer].totalDiscount -= existedProductItem.discount;
+                state.customers[findCustomer].totalAmount -= existedProductItem.pricePerOne;
                 state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
                 return
             }
             const updatedProductItem = {
                 ...existedProductItem,
                 number: existedProductItem.number - 1,
-                totalAmount: existedProductItem.totalAmount - existedProductItem.price,
-                discount: existedProductItem.discount / 2,
+                discount: existedProductItem.discount - existedProductItem.discountPerOne,
+                totalAmount: existedProductItem.totalAmount - (existedProductItem.price - existedProductItem.discountPerOne),
                 stock: existedProductItem.stock + 1,
             }
             state.customers[findCustomer].products[existedProductItemIndex] = updatedProductItem;
-            state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].price;
+            // state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].price;
+            state.customers[findCustomer].totalPrice -= (existedProductItem.price - existedProductItem.discountPerOne);
+            state.customers[findCustomer].totalDiscount -= existedProductItem.discountPerOne;
+            state.customers[findCustomer].totalAmount -= existedProductItem.pricePerOne;
+
         },
         removeProductItem: (state, action) => {
             const customers = current(state.customers)
             let findCustomer = customers.findIndex(item => item.customerId === action.payload.customerId);
             let existedProductItemIndex = state.customers[findCustomer].products.findIndex(item => item.code === action.payload.productCode);
             state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].totalAmount;
+            state.customers[findCustomer].totalDiscount -= state.customers[findCustomer].products[existedProductItemIndex].discount;
             state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
         },
         removeProduct: (state, action) => {
@@ -144,11 +167,29 @@ export const salesInvoice = createSlice({
             let findCustomer = customers.find(item => item.customerId === +action.payload);
             state.customers.splice(findCustomerIndex, 1);
         },
+        removeAllProducts: (state, action) => {
+            const customers = current(state.customers)
+            let findCustomerIndex = customers.findIndex(item => item.customerId === action.payload.customerId);
+            let findCustomer = customers.find(item => item.customerId === action.payload.customerId);
+
+            console.log(findCustomerIndex);
+            console.log(findCustomer);
+
+            if (state.customers[findCustomerIndex].products.length === 0) {
+                toast.error("هیچ آیتمی وجود ندارد!");
+                return
+            }
+
+            state.customers[findCustomerIndex].products = [];
+            state.customers[findCustomerIndex].totalAmount = 0;
+            state.customers[findCustomerIndex].totalDiscount = 0;
+            state.customers[findCustomerIndex].totalPrice = 0;
+        },
         addCustomers: (state, action) => {
             state.customers.push(action.payload);
         }
     }
 })
 
-export const { addNewProduct, addCustomers, increase, decrease, removeProductItem, removeProduct } = salesInvoice.actions;
+export const { addNewProduct, addCustomers, increase, decrease, removeProductItem, removeProduct, removeAllProducts } = salesInvoice.actions;
 export default salesInvoice.reducer;

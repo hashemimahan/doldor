@@ -61,7 +61,7 @@ table tfoot tr:nth-child(2){
   
 }
 table, th:nth-child(4) {
-  width: 50%;
+  
 }
 table tbody tr:nth-child(odd){
   background-color: #BFBDBD;
