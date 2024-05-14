@@ -1,5 +1,6 @@
 "use client";
 import {
+  addBatchProduct,
   addNewProduct,
   changeUnit,
   decrease,
@@ -93,7 +94,6 @@ const Form = ({ factorId }) => {
 
           <tbody>
             {products.map((item) => {
-              console.log(item.unit);
               return (
                 <tr key={crypto.randomUUID()}>
                   <td className={"tableRows"}>{item.select}</td>
@@ -125,8 +125,17 @@ const Form = ({ factorId }) => {
                       +
                     </button>
                     {item.number || item.weight}
-                    {toggleModal &&
-                      createPortal(<Modal unit={item.number} maxValue={item.stock} onClose={onToggleModalHandler}/>, document.body)}
+                    {(toggleModal) &&
+                      createPortal(
+                        <Modal
+                          customerId={+factorId}
+                          productCode={item.code}
+                          unit={item.number}
+                          maxValue={item.tsw}
+                          onClose={onToggleModalHandler}
+                        />,
+                        document.body
+                      )}
                     {/* <input onChange={onInputChangeHandler} type="number" id="tentacles" name="tentacles" step={item.number !== undefined ? "1" : "0.1"} min="1" max="1000" value={item.number || item.weight}/> */}
                     {/* <input onChange={onInputChangeHandler} type="number" id="tentacles" name="tentacles" step={item.number !== undefined ? "1" : "0.1"} min="1" max="1000"/> */}
                     <button
@@ -344,6 +353,7 @@ const Form = ({ factorId }) => {
                 discountPerOne: 15000,
                 totalAmount: 85000,
                 stock: 5,
+                tsw: 6,
                 remove: <FaTrashAlt />,
               },
               // id: 1
@@ -372,6 +382,7 @@ const Form = ({ factorId }) => {
                 discountPerOne: 5000,
                 totalAmount: 45000,
                 stock: 5,
+                tsw: 6,
                 remove: <FaTrashAlt />,
               },
               // id: 1
@@ -400,6 +411,7 @@ const Form = ({ factorId }) => {
                 discountPerOne: 10000,
                 totalAmount: 80000,
                 stock: 7,
+                tsw: 8,
                 remove: <FaTrashAlt />,
               },
               // id: 1

@@ -21,7 +21,8 @@ const initialState = {
                     discount: 2500,
                     discountPerOne: 10000,
                     totalAmount: 10000,
-                    stock: 2,
+                    stock: 500,
+                    tsw: 501,
                     remove: <FaTrashAlt />,
                 }
             ],
@@ -47,6 +48,7 @@ const initialState = {
                     discountPerOne: 10000,
                     totalAmount: 15000,
                     stock: 2,
+                    tsw: 3,
                     remove: <FaTrashAlt />,
                 }
             ],
@@ -71,7 +73,8 @@ const initialState = {
                     discount: 10000,
                     discountPerOne: 10000,
                     totalAmount: 90000,
-                    stock: 2,
+                    stock: 50,
+                    tsw: 51,
                     remove: <FaTrashAlt />,
                 }
             ],
@@ -98,6 +101,7 @@ const initialState = {
                     discountPerOne: 0,
                     totalAmount: 25000,
                     stock: 10,
+                    tsw: 11,
                     remove: <FaTrashAlt />,
                 }
             ],
@@ -258,11 +262,50 @@ export const salesInvoice = createSlice({
                 state.customers[findCustomerIndex].totalNumber -= existedProductItem.number;
                 delete state.customers[findCustomerIndex].products[existedProductItemIndex].number
             }
-
+        },
+        addBatchProduct: (state, action) => {
+            const customers = current(state.customers);
+            let findCustomerIndex = customers.findIndex(item => item.customerId === action.payload.customerId);
+            let existedProductItemIndex = state.customers[findCustomerIndex].products.findIndex(item => item.code === action.payload.productCode);
+            let existedProductItem = state.customers[findCustomerIndex].products[existedProductItemIndex];
+            let existedCustomer = state.customers[findCustomerIndex];
+            console.log(action.payload);
+            console.log(current(existedCustomer));
             console.log(current(existedProductItem));
+            
+            if (existedProductItem.stock <= 0) {
+                toast('موجودی انبار: ' + existedProductItem.stock)
+                return
+            }
+            if (!!action.payload.weight) {
+                if ((existedProductItem.stock + existedProductItem.weight) >= action.payload.weight) {
+                    existedProductItem.stock = (existedProductItem.stock + existedProductItem.weight) - action.payload.weight;
+                    existedProductItem.weight = action.payload.weight;
+                    existedProductItem.totalAmount = 0;
+                    existedProductItem.discount = 0;
+                } else {
+                    toast('موجودی انبار: ' + (existedProductItem.stock + existedProductItem.weight))
+                    return
+                }
+            } else if (!!action.payload.number) {
+                if ((existedProductItem.stock + existedProductItem.number) >= action.payload.number) {
+                    existedProductItem.stock = (existedProductItem.stock + existedProductItem.number) - action.payload.number;
+                    existedProductItem.number = action.payload.number;
+                    existedProductItem.discount = existedProductItem.discount * existedProductItem.number;
+                    existedProductItem.totalAmount = (existedProductItem.pricePerOne * existedProductItem.number) - existedProductItem.discount;
+
+                    existedCustomer.totalAmount = existedCustomer.totalAmount + 1;
+                    // existedCustomer.totalDiscount = existedCustomer.totalDiscount - 1;
+                    existedCustomer.totalDiscount -= existedCustomer.totalDiscount + 10000;
+                    // existedCustomer.totalPrice = (existedCustomer.totalPrice - (existedProductItem.number * (existedProductItem.pricePerOne - existedProductItem.discountPerOne)));
+                } else {
+                    toast('موجودی انبار: ' + (existedProductItem.stock + existedProductItem.number))
+                    return
+                }
+            }
         }
     }
 })
 
-export const { addNewProduct, addCustomers, increase, decrease, removeProductItem, removeProduct, removeAllProducts, changeUnit } = salesInvoice.actions;
+export const { addBatchProduct, addNewProduct, addCustomers, increase, decrease, removeProductItem, removeProduct, removeAllProducts, changeUnit } = salesInvoice.actions;
 export default salesInvoice.reducer;
