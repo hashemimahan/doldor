@@ -1,15 +1,19 @@
 "use client";
 import {
   addNewProduct,
+  changeUnit,
   decrease,
   increase,
   removeAllProducts,
   removeProductItem,
 } from "@/reducers/sales-invoice";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
+import { PiPencilLight } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "@/components/utilities/select";
+import Modal from "../utilities/modal";
+import { createPortal } from "react-dom";
 
 const headings = [
   "انتخاب",
@@ -26,11 +30,11 @@ const headings = [
 ];
 
 const options = [
-  { value: "number", label: "عدد", color: "#f00" },
-  { value: "kilo", label: "کیلو", color: "#0f0" },
+  { value: "number", label: "عدد" },
+  { value: "kilo", label: "کیلو" },
 ];
 const Form = ({ factorId }) => {
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [toggleModal, setToggleModal] = useState(false);
   let existingFactor = useSelector((state) => state.salesInvoice.customers);
   let dispatch = useDispatch();
   let products = existingFactor[+factorId - 1].products;
@@ -62,9 +66,18 @@ const Form = ({ factorId }) => {
     dispatch(removeAllProducts(payload));
   };
 
-  const onSelectChangeHandler = (data) => {
-	setSelectedValue(data)
-  }
+  const onSelectChangeHandler = (event, productCode) => {
+    let payload = {
+      customerId: +factorId,
+      productCode: productCode,
+      unit: event.target.selectedIndex === 0 ? "number" : "kilo",
+    };
+    dispatch(changeUnit(payload));
+  };
+
+  const onToggleModalHandler = () => {
+    setToggleModal((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -80,8 +93,9 @@ const Form = ({ factorId }) => {
 
           <tbody>
             {products.map((item) => {
+              console.log(item.unit);
               return (
-                <tr key={"123456789"}>
+                <tr key={crypto.randomUUID()}>
                   <td className={"tableRows"}>{item.select}</td>
                   <td className={"tableRows"}>{item.code}</td>
                   <td className={"tableRows"}>{item.barCode}</td>
@@ -89,11 +103,17 @@ const Form = ({ factorId }) => {
                     <p className={"w-[20rem]"}>{item.product}</p>
                   </td>
                   <td className="relative">
-                    <Select options={options} onSelect={onSelectChangeHandler}/>
+                    <Select
+                      key={Math.random().toString(32)}
+                      onSelect={onSelectChangeHandler}
+                      options={options}
+                      code={item.code}
+                      unit={item.unit || "number"}
+                    />
                   </td>
                   <td
                     className={
-                      "flex border-none gap-4 text-4xl font-iranYekan justify-center items-center"
+                      "flex border-none gap-4 text-4xl font-iranYekan justify-center items-center relative"
                     }
                   >
                     <button
@@ -104,7 +124,11 @@ const Form = ({ factorId }) => {
                     >
                       +
                     </button>
-                    {item.number}
+                    {item.number || item.weight}
+                    {toggleModal &&
+                      createPortal(<Modal unit={item.number} maxValue={item.stock} onClose={onToggleModalHandler}/>, document.body)}
+                    {/* <input onChange={onInputChangeHandler} type="number" id="tentacles" name="tentacles" step={item.number !== undefined ? "1" : "0.1"} min="1" max="1000" value={item.number || item.weight}/> */}
+                    {/* <input onChange={onInputChangeHandler} type="number" id="tentacles" name="tentacles" step={item.number !== undefined ? "1" : "0.1"} min="1" max="1000"/> */}
                     <button
                       type={"button"}
                       onClick={() =>
@@ -112,6 +136,13 @@ const Form = ({ factorId }) => {
                       }
                     >
                       -
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onToggleModalHandler}
+                      className="absolute top-1/2 right-0 -translate-y-[1.15rem] cursor-pointer"
+                    >
+                      <PiPencilLight size={"20px"} />
                     </button>
                   </td>
                   <td className={"tableRows"}>{item.price}</td>
@@ -130,14 +161,19 @@ const Form = ({ factorId }) => {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3} className="p-0">
-                
-              </td>
+              <td colSpan={3} className="p-0"></td>
               <td>{false}</td>
               <td>1235</td>
               <td>
-                <p className="font-iranYekan font-black text-xl">وزنی: {100}</p>
-                <p className="font-iranYekan font-black text-xl">عددی: {existingFactor[+factorId-1].totalNumber >= 0 ? existingFactor[+factorId-1].totalNumber : 0}</p>
+                <p className="font-iranYekan font-black text-xl">
+                  وزنی: {existingFactor[+factorId - 1].totalWeight}
+                </p>
+                <p className="font-iranYekan font-black text-xl">
+                  عددی:{" "}
+                  {existingFactor[+factorId - 1].totalNumber >= 0
+                    ? existingFactor[+factorId - 1].totalNumber
+                    : 0}
+                </p>
               </td>
               <td className="text-2xl font-iranYekanRegular font-black">
                 {existingFactor[+factorId - 1].totalAmount}
@@ -158,15 +194,21 @@ const Form = ({ factorId }) => {
             </tr>
             <tr>
               <td colSpan={3} className="p-0">
-			  <button type={"button"} className="w-full h-full tableRows">
+                <button type={"button"} className="w-full h-full tableRows">
                   انتقال به مانده مشتری
                 </button>
               </td>
               <td className="grid grid-cols-2 border-none outline-none !p-0 place-content-center">
-                <button type={"button"} className="h-full tableRows py-[1.4rem] first-of-type:border-l-2 border-black border-b-2">
+                <button
+                  type={"button"}
+                  className="h-full tableRows py-[1.4rem] first-of-type:border-l-2 border-black border-b-2"
+                >
                   مرجوعی
                 </button>
-                <button type={"button"} className="h-full tableRows py-[1.4rem] first-of-type:border-l-2 border-black border-b-2">
+                <button
+                  type={"button"}
+                  className="h-full tableRows py-[1.4rem] first-of-type:border-l-2 border-black border-b-2"
+                >
                   نقدی
                 </button>
               </td>
@@ -181,15 +223,22 @@ const Form = ({ factorId }) => {
             </tr>
             <tr>
               <td colSpan={3} className="p-0">
-			  <button type={"button"} className="w-full h-full tableRows">
+                <button type={"button"} className="w-full h-full tableRows">
                   انتقال به انبار
                 </button>
               </td>
               <td className="grid grid-cols-2 border-none outline-none !p-0 place-content-center">
-                <button type={"button"} onClick={onRemoveAllProductHandler} className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black border-b-2">
+                <button
+                  type={"button"}
+                  onClick={onRemoveAllProductHandler}
+                  className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black border-b-2"
+                >
                   حذف سفارش
                 </button>
-                <button type={"button"} className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black border-b-2">
+                <button
+                  type={"button"}
+                  className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black border-b-2"
+                >
                   کارت خوان
                 </button>
               </td>
@@ -208,15 +257,21 @@ const Form = ({ factorId }) => {
             </tr>
             <tr>
               <td colSpan={3} className="p-0">
-			  <button type={"button"} className="w-full h-full tableRows">
+                <button type={"button"} className="w-full h-full tableRows">
                   انتقال به بیرون
                 </button>
               </td>
               <td className="grid grid-cols-2 border-none outline-none !p-0 place-content-center">
-                <button type={"button"} className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black">
+                <button
+                  type={"button"}
+                  className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black"
+                >
                   برگشت از فروش
                 </button>
-                <button type={"button"} className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black">
+                <button
+                  type={"button"}
+                  className="h-full tableRows py-[10px] first-of-type:border-l-2 border-black"
+                >
                   مانده
                 </button>
               </td>
