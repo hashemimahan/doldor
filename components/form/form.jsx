@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "@/components/utilities/select";
 import Modal from "../utilities/modal";
 import { createPortal } from "react-dom";
+import { toggleModal } from "../../reducers/sales-invoice";
 
 const headings = [
   "انتخاب",
@@ -35,7 +36,6 @@ const options = [
   { value: "kilo", label: "کیلو" },
 ];
 const Form = ({ factorId }) => {
-  const [toggleModal, setToggleModal] = useState(false);
   let existingFactor = useSelector((state) => state.salesInvoice.customers);
   let dispatch = useDispatch();
   let products = existingFactor[+factorId - 1].products;
@@ -76,8 +76,13 @@ const Form = ({ factorId }) => {
     dispatch(changeUnit(payload));
   };
 
-  const onToggleModalHandler = () => {
-    setToggleModal((prevState) => !prevState);
+  const onToggleModalHandler = (isShow, code) => {
+    let payload = {
+      customerId: +factorId,
+      productCode: code,
+      isShow,
+    };
+    dispatch(toggleModal(payload));
   };
 
   return (
@@ -125,7 +130,7 @@ const Form = ({ factorId }) => {
                       +
                     </button>
                     {item.number || item.weight}
-                    {(toggleModal) &&
+                    {item.modal &&
                       createPortal(
                         <Modal
                           customerId={+factorId}
@@ -148,15 +153,30 @@ const Form = ({ factorId }) => {
                     </button>
                     <button
                       type="button"
-                      onClick={onToggleModalHandler}
+                      onClick={() => onToggleModalHandler(true, item.code)}
                       className="absolute top-1/2 right-0 -translate-y-[1.15rem] cursor-pointer"
                     >
                       <PiPencilLight size={"20px"} />
                     </button>
                   </td>
-                  <td className={"tableRows"}>{item.price}</td>
-                  <td className={"tableRows"}>{item.discount}</td>
-                  <td className={"tableRows"}>{item.totalAmount}</td>
+                  <td className={"tableRows"}>
+                    {new Intl.NumberFormat("fa-IR", {
+                      style: "currency",
+                      currency: "IRR",
+                    }).format(item.price)}
+                  </td>
+                  <td className={"tableRows"}>
+                    {new Intl.NumberFormat("fa-IR", {
+                      style: "currency",
+                      currency: "IRR",
+                    }).format(item.discount)}
+                  </td>
+                  <td className={"tableRows"}>
+                    {new Intl.NumberFormat("fa-IR", {
+                      style: "currency",
+                      currency: "IRR",
+                    }).format(item.totalAmount)}
+                  </td>
                   <td className={"tableRows"}>{item.stock}</td>
                   <td
                     className={"tableRows cursor-pointer"}
@@ -185,13 +205,22 @@ const Form = ({ factorId }) => {
                 </p>
               </td>
               <td className="text-2xl font-iranYekanRegular font-black">
-                {existingFactor[+factorId - 1].totalAmount}
+                {new Intl.NumberFormat("fa-IR", {
+                  style: "currency",
+                  currency: "IRR",
+                }).format(existingFactor[+factorId - 1].totalAmount)}
               </td>
               <td className="text-2xl font-iranYekanRegular font-black">
-                {existingFactor[+factorId - 1].totalDiscount}
+                {new Intl.NumberFormat("fa-IR", {
+                  style: "currency",
+                  currency: "IRR",
+                }).format(existingFactor[+factorId - 1].totalDiscount)}
               </td>
               <td className="text-2xl font-iranYekanRegular font-black">
-                {existingFactor[+factorId - 1].totalPrice}
+                {new Intl.NumberFormat("fa-IR", {
+                  style: "currency",
+                  currency: "IRR",
+                }).format(existingFactor[+factorId - 1].totalPrice)}
               </td>
               <td>{false}</td>
               <td
@@ -347,6 +376,7 @@ const Form = ({ factorId }) => {
                 barCode: 12345667,
                 product: "سیروپیاز",
                 number: 1,
+                unit: "number",
                 price: 100000,
                 pricePerOne: 100000,
                 discount: 15000,
@@ -376,6 +406,7 @@ const Form = ({ factorId }) => {
                 barCode: 12345667,
                 product: "خیار",
                 number: 1,
+                unit: "number",
                 price: 50000,
                 pricePerOne: 50000,
                 discount: 5000,
@@ -405,6 +436,7 @@ const Form = ({ factorId }) => {
                 barCode: 12345667,
                 product: "ماست",
                 number: 1,
+                unit: "number",
                 price: 90000,
                 pricePerOne: 90000,
                 discount: 10000,

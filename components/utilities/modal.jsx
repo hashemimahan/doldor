@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 function Modal({ unit, maxValue, onClose, customerId, productCode }) {
-    console.log(customerId);
-    console.log(productCode);
   const [number, setNumber] = useState(null);
   let dispatch = useDispatch();
   const onSubmitFormHandler = (event) => {
@@ -19,12 +17,12 @@ function Modal({ unit, maxValue, onClose, customerId, productCode }) {
     dispatch(addBatchProduct(payload));
 
     setNumber(null);
-    onClose()
+    onClose(false, productCode)
   };
 
   return (
     <div className="fixed inset-0 grid place-content-center z-[100000000000000] isolate">
-      <div className="fixed inset-0 bg-black/10 -z-10" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/10 -z-10" onClick={onClose.bind(null, false, productCode)} />
       <form onSubmit={onSubmitFormHandler} className="flex flex-col gap-2">
         <input
           type="number"
