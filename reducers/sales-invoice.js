@@ -2,121 +2,21 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import { FaTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
+import useLocalStorage from "../hooks/useLocalStarage";
 
+
+const {setItem, getItem, removeItem} = useLocalStorage('customers');
+/* از اینجا ................ */
+const savedProducts = getItem();
 const initialState = {
-  customers: [
-    {
-      customerId: 1,
-      products: [
-        {
-          select: <input type={"checkbox"} />,
-          code: 1234656,
-          barCode: 12345667,
-          product: "فندک",
-          number: 1,
-          unit: "number",
-          price: 12500,
-          pricePerOne: 12500,
-          discount: 2500,
-          discountPerOne: 10000,
-          totalAmount: 10000,
-          stock: 500,
-          tsw: 501,
-          remove: <FaTrashAlt />,
-        },
-      ],
-      totalPrice: 10000,
-      totalDiscount: 2500,
-      totalAmount: 12500,
-      totalNumber: 1,
-      totalWeight: 0,
-    },
-    {
-      customerId: 2,
-      products: [
-        {
-          select: <input type={"checkbox"} />,
-          code: 10254586795,
-          barCode: 12345667,
-          product: "سوجوق",
-          number: 1,
-          unit: "number",
-          price: 17500,
-          pricePerOne: 17500,
-          discount: 2500,
-          discountPerOne: 10000,
-          totalAmount: 15000,
-          stock: 2,
-          tsw: 3,
-          remove: <FaTrashAlt />,
-        },
-      ],
-      totalPrice: 15000,
-      totalDiscount: 2500,
-      totalAmount: 17500,
-      totalNumber: 1,
-      totalWeight: 0,
-    },
-    {
-      customerId: 3,
-      products: [
-        {
-          select: <input type={"checkbox"} />,
-          code: 7546954213000,
-          barCode: 12345667,
-          product: "تخم مرغ",
-          number: 1,
-          unit: "number",
-          price: 100000,
-          pricePerOne: 100000,
-          discount: 10000,
-          discountPerOne: 10000,
-          totalAmount: 90000,
-          stock: 50,
-          tsw: 51,
-          remove: <FaTrashAlt />,
-        },
-      ],
-      totalPrice: 90000,
-      totalDiscount: 10000,
-      totalAmount: 100000,
-      totalNumber: 1,
-      totalWeight: 0,
-    },
-    {
-      customerId: 4,
-      products: [
-        {
-          select: <input type={"checkbox"} />,
-          code: 909054682144,
-          barCode: 12345667,
-          product: "سیب زمینی",
-          // number: 1,
-          weight: 1,
-          unit: "kilo",
-          price: 25000,
-          pricePerOne: 25000,
-          discount: 0,
-          discountPerOne: 0,
-          totalAmount: 25000,
-          stock: 10,
-          tsw: 11,
-          remove: <FaTrashAlt />,
-        },
-      ],
-      totalPrice: 25000,
-      totalDiscount: 0,
-      totalAmount: 25000,
-      totalNumber: 0,
-      totalWeight: 1,
-    },
-  ],
+  customers: savedProducts,
 };
 export const salesInvoice = createSlice({
   name: "salesInvoice",
   initialState,
   reducers: {
     addNewProduct: (state, action) => {
+        removeItem("customers")
       const customers = current(state.customers);
       let findCustomer = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -178,37 +78,36 @@ export const salesInvoice = createSlice({
         !!action.payload.productsDetail?.weight &&
           state.customers[findCustomer].totalWeight++;
       }
-      console.log(existedProductItem);
-      console.log(customers);
+      setItem(state.customers)
     },
     increase: (state, action) => {
-      const customers = current(state.customers);
-      let findCustomer = customers.findIndex(
-        (item) => item.customerId === action.payload.customerId
-      );
-      let existedProductItemIndex = state.customers[
-        findCustomer
-      ].products.findIndex((item) => item.code === action.payload.productCode);
-      let existedProductItem =
+      removeItem("customers")
+        const customers = current(state.customers);
+        let findCustomer = customers.findIndex(
+            (item) => item.customerId === action.payload.customerId
+        );
+        let existedProductItemIndex = state.customers[
+            findCustomer
+        ].products.findIndex((item) => item.code === action.payload.productCode);
+        let existedProductItem =
         state.customers[findCustomer].products[existedProductItemIndex];
-      if (existedProductItem.stock === 0) {
-        toast.error("کالا در انبار موجود نمی باشد");
-        return;
-      }
+        if (existedProductItem.stock === 0) {
+            toast.error("کالا در انبار موجود نمی باشد");
+            return;
+        }
         let status = existedProductItem.unit === "number" ? "number" : "weight";
-      const updatedProductItem = {
-        ...existedProductItem,
-        // number: !!existedProductItem.number && existedProductItem.number + 1,
-        // weight: !!existedProductItem.weight && existedProductItem.weight + 1,
-        [status]: existedProductItem[status] + 1,
-        discount:
-          existedProductItem.discount + existedProductItem.discountPerOne,
-        totalAmount:
-          existedProductItem.totalAmount +
-          (existedProductItem.price - existedProductItem.discountPerOne),
-        stock: existedProductItem.stock - 1,
-      };
-      console.log(current(existedProductItem));
+        const updatedProductItem = {
+            ...existedProductItem,
+            // number: !!existedProductItem.number && existedProductItem.number + 1,
+            // weight: !!existedProductItem.weight && existedProductItem.weight + 1,
+            [status]: existedProductItem[status] + 1,
+            discount:
+            existedProductItem.discount + existedProductItem.discountPerOne,
+            totalAmount:
+            existedProductItem.totalAmount +
+            (existedProductItem.price - existedProductItem.discountPerOne),
+            stock: existedProductItem.stock - 1,
+        };
       state.customers[findCustomer].products[existedProductItemIndex] =
         updatedProductItem;
       state.customers[findCustomer].totalPrice +=
@@ -221,8 +120,11 @@ export const salesInvoice = createSlice({
         state.customers[findCustomer].totalNumber++;
       !!existedProductItem.weight &&
         state.customers[findCustomer].totalWeight++;
+
+        setItem(current(state.customers))
     },
     decrease: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomer = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -284,8 +186,11 @@ export const salesInvoice = createSlice({
         state.customers[findCustomer].totalNumber--;
       !!existedProductItem.weight &&
         state.customers[findCustomer].totalWeight--;
+
+        setItem(current(state.customers))
     },
     removeProductItem: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomer = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -310,8 +215,11 @@ export const salesInvoice = createSlice({
         state.customers[findCustomer].products[existedProductItemIndex]
           ?.weight || 0;
       state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
+
+      setItem(current(state.customers))
     },
     removeProduct: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomerIndex = customers.findIndex(
         (item) => item.customerId === +action.payload
@@ -320,8 +228,11 @@ export const salesInvoice = createSlice({
         (item) => item.customerId === +action.payload
       );
       state.customers.splice(findCustomerIndex, 1);
+
+      setItem(current(state.customers));
     },
     removeAllProducts: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomerIndex = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -341,11 +252,14 @@ export const salesInvoice = createSlice({
       state.customers[findCustomerIndex].totalPrice = 0;
       state.customers[findCustomerIndex].totalNumber = 0;
       state.customers[findCustomerIndex].totalWeight = 0;
+
+      setItem(current(state.customers))
     },
     addCustomers: (state, action) => {
       state.customers.push(action.payload);
     },
     changeUnit: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomerIndex = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -386,8 +300,11 @@ export const salesInvoice = createSlice({
           existedProductItemIndex
         ].number;
       }
+
+      setItem(current(state.customers))
     },
     addBatchProduct: (state, action) => {
+      removeItem("customers")
       const customers = current(state.customers);
       let findCustomerIndex = customers.findIndex(
         (item) => item.customerId === action.payload.customerId
@@ -478,6 +395,7 @@ export const salesInvoice = createSlice({
     existedCustomer.totalNumber = existedCustomer.products.reduce((sum, product) => sum + (product.number || 0), 0)
 
 
+    setItem(current(state.customers))
     },
     toggleModal: (state, action) => {
       const customers = current(state.customers);

@@ -16,6 +16,7 @@ import Select from "@/components/utilities/select";
 import Modal from "../utilities/modal";
 import { createPortal } from "react-dom";
 import { toggleModal } from "../../reducers/sales-invoice";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 const headings = [
   "انتخاب",
@@ -36,9 +37,11 @@ const options = [
   { value: "kilo", label: "کیلو" },
 ];
 const Form = ({ factorId }) => {
+  const [value, setValue, removeValue] = useLocalStorage('customers', []);
   let existingFactor = useSelector((state) => state.salesInvoice.customers);
   let dispatch = useDispatch();
   let products = existingFactor[+factorId - 1].products;
+  
 
   const onChangeProductHandler = (code, action) => {
     let payload = {
@@ -101,7 +104,7 @@ const Form = ({ factorId }) => {
             {products.map((item) => {
               return (
                 <tr key={crypto.randomUUID()}>
-                  <td className={"tableRows"}>{item.select}</td>
+                  <td className={"tableRows"}>{/* {item.select} */}<input type={"checkbox"} /></td>
                   <td className={"tableRows"}>{item.code}</td>
                   <td className={"tableRows"}>{item.barCode}</td>
                   <td className={"tableRows"}>
@@ -182,7 +185,8 @@ const Form = ({ factorId }) => {
                     className={"tableRows cursor-pointer"}
                     onClick={() => onRemoveProductItemHandler(item.code)}
                   >
-                    {item.remove}
+                    {/* {item.remove} */}
+                    <FaTrashAlt />
                   </td>
                 </tr>
               );

@@ -11,9 +11,10 @@ const Receipt = () => {
     const {receiptId} = useParams();
     const num = useSelector((state) => state.counter.number);
     const item = useSelector((state) => state.counter.items);
+    console.log(receiptId);
 
     let count = 1;
-    if (receiptId && receiptId >= 1) {
+    if (receiptId !== undefined && receiptId >= 1) {
         count = Number(receiptId);
     } else {
         count = num;
@@ -28,6 +29,7 @@ const Receipt = () => {
     return (
         <div className={"flex flex-row flex-nowrap gap-2 justify-center items-center font-iranYekan font-bold text-lg min-w-max"}>
             <button className={"hover:text-doldor_orange"} onClick={() => {
+                if (receiptId === undefined) return
                 dispatch(increment())
                 if (item.length === Number(receiptId)) return
                 router.replace(`/receipt/${count+1}`)
@@ -38,8 +40,9 @@ const Receipt = () => {
                 فیش شماره <span className={"mr-1"}>{count}</span>
             </p>
             <button className={"hover:text-doldor_orange"} onClick={() => {
+                if (receiptId === undefined) return             
                 dispatch(decrement())
-                if (count === 1) return
+                if (count === 1 || count < 1) return
                 router.replace(`/receipt/${count-1}`)
             }}>
                 <IoIosArrowBack size={"1.8rem"}/>

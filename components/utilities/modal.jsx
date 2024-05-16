@@ -2,17 +2,23 @@
 import { addBatchProduct } from "@/reducers/sales-invoice";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 function Modal({ unit, maxValue, onClose, customerId, productCode }) {
   const [number, setNumber] = useState(null);
   let dispatch = useDispatch();
   const onSubmitFormHandler = (event) => {
     event.preventDefault();
+    if (Number(number) <= 0 || !number) {
+      toast("کاربر عزیز لطفا عددی مثبت و بالاتر از صفر وارد کنید00000000")
+      return
+    }
+    let modifiedNumber = number.replace(/^0+/, "");
     let status = unit !== undefined ? "number" : "weight";
     let payload = {
         customerId,
         productCode,
-        [status]: +number,
+        [status]: +Number.parseFloat(modifiedNumber).toFixed(1),
     };
     dispatch(addBatchProduct(payload));
 
@@ -30,7 +36,13 @@ function Modal({ unit, maxValue, onClose, customerId, productCode }) {
           dir="rtl"
           className="pr-2 py-4 w-96 h-16 font-iranYekan font-black text-2xl"
           required
-          onChange={(event) => setNumber(event.target.value)}
+          onChange={(event) => {
+            if (Number(event.target.value) <= 0) {
+              toast("کاربر عزیز لطفا عددی مثبت و بالاتر از صفر وارد کنید")
+              return
+            }
+            setNumber(event.target.value)
+          }}
           value={number}
         />
         <button

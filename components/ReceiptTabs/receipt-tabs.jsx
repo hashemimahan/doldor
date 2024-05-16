@@ -47,9 +47,9 @@ const ReceiptTabs = () => {
     return (
         <div className={"flex flex-row flex-nowrap gap-2 py-4"}>
             <ul className={"flex flex-row flex-nowrap gap-4 w-max"}>
-                {items.map((item, index) => {
+                {items.length > 0 ? items.map((item, index) => {
                     return <TabItems key={item.id} title={item.title} cast={item.cast} id={item.id} onRemove={onRemoveReceiptItemHandler}/>
-                })}
+                }) : undefined}
             </ul>
             <button className={"hover:text-doldor_orange"} onClick={() => {
                 let newItem = {
@@ -62,7 +62,10 @@ const ReceiptTabs = () => {
                     products: [],
                     totalPrice: 0,
                     totalDiscount: 0,
-                }
+                    totalAmount: 0,
+                    totalNumber: 0,
+                    totalWeight: 0,
+                  };
                 dispatch(addReceiptItem(newItem))
                 dispatch(addCustomers(newCustomer))
                 router.push(`/receipt/${newItem.id}`);

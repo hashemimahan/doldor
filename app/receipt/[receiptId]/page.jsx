@@ -13,10 +13,10 @@ const Page = ({ params }) => {
 
   let content;
 
-  if (+receiptId > items.length) {
+  if (Number(receiptId) > items.length || Number(receiptId) < 0) {
     /*   */
     delay(500).then(() => {
-      router.push(`/receipt/${items.length.toString()}`);
+      items.length > 0 ? router.push(`/receipt/${items.length.toString()}`) : router.push(`/receipt`);
     });
     content = <p>صفحه مورد نظر یافت نشد در حال انتقال به فاکتور قبلی هستید لطفا منتظر بمانید</p>
   } else {

@@ -3,7 +3,8 @@ import React from 'react';
 const Page = () => {
     return (
         <div>
-            hello world
+            <p>هیچ فاکتوری برای نمایش وجود ندارد</p>
+            <p>لطفا بر روی + کلیک کنید و فاکتور جدیدی اضافه کنید</p>
         </div>
     );
 };
