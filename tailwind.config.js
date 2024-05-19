@@ -13,8 +13,12 @@ module.exports = {
         "strenuous": ['var(--STFont)'],
       },
       colors: {
-        "doldor_orange": "#F37151",
+        "doldor_orange": "#FF6E5C",
         "green_light": "#e5fce3",
+        "doldor_header_bg": "#C4F2E1",
+        "doldor_icon": "#80DBB9",
+        "doldor_text": "#161C32",
+        "doldor_button_bg": "#80DBB9",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

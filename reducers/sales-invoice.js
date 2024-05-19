@@ -9,7 +9,7 @@ const {setItem, getItem, removeItem} = useLocalStorage('customers');
 /* از اینجا ................ */
 const savedProducts = getItem();
 const initialState = {
-  customers: savedProducts,
+  customers: savedProducts ?? [],
 };
 export const salesInvoice = createSlice({
   name: "salesInvoice",

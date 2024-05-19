@@ -1,0 +1,59 @@
+.receiptTable {
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    width: 100%;
+    color: #000;
+    margin-inline: auto;
+    background: #FFFFFF;
+    height: fit-content;
+
+    .receiptTable__row {
+        text-align: center;
+        display: grid;
+        grid-template-columns: [select-start] 4% [select-end code-start] 7% [code-end barcode-start] 10% [barcode-end product-start] auto [product-end number-start] 6% [number-end unit-start] 6% [unit-end price-start] 10% [price-end discount-start] 12% [discount-end amount-start] 8% [amount-end stock-start] 5% [stock-end remove-start] 4% [remove-end];
+        grid-template-rows: 4rem;
+        border-bottom: 1px solid #000000;
+
+        & > * {
+            /*background: rgba(0, 0, 0, 0.2);*/
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid #000000;
+        }
+
+        & > *:first-child {
+            grid-column: select;
+        }
+        & > *:nth-child(2) {
+            grid-column: code;
+        }
+        & > *:nth-child(3) {
+            grid-column: barcode;
+        }
+        & > *:nth-child(4) {
+            grid-column: product;
+        }
+        & > *:nth-child(5) {
+            grid-column: number;
+        }
+        & > *:nth-child(6) {
+            grid-column: unit;
+        }
+        & > *:nth-child(7) {
+            grid-column: price;
+        }
+        & > *:nth-child(8) {
+            grid-column: discount;
+        }
+        & > *:nth-child(9) {
+            grid-column: amount;
+        }
+        & > *:nth-child(10) {
+            grid-column: stock;
+        }
+        & > *:nth-child(11) {
+            grid-column: remove;
+        }
+    }
+}

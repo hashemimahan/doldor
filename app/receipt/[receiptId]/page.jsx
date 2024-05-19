@@ -5,6 +5,7 @@ import { notFound, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import classes from './page.module.css';
+import ReceiptTable from "@/components/form/receipt-table";
 
 const Page = ({ params }) => {
   const { receiptId } = params;
@@ -13,16 +14,19 @@ const Page = ({ params }) => {
 
   let content;
 
-  if (Number(receiptId) > items.length || Number(receiptId) < 0) {
+  if (Number(receiptId) > items?.length || Number(receiptId) < 0) {
     /*   */
     delay(500).then(() => {
-      items.length > 0 ? router.push(`/receipt/${items.length.toString()}`) : router.push(`/receipt`);
+      items?.length > 0 ? router.push(`/receipt/${items.length.toString()}`) : router.push(`/receipt`);
     });
     content = <p>صفحه مورد نظر یافت نشد در حال انتقال به فاکتور قبلی هستید لطفا منتظر بمانید</p>
   } else {
     content = <Form factorId={receiptId} />;
   }
-  return <div className={`${classes.formWrapper}`}>{content}</div>;
+  return <div className={`${classes.formWrapper}`}>
+    {/*{content}*/}
+    <ReceiptTable factorId={receiptId}/>
+  </div>;
 };
 
 export default Page;

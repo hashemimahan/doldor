@@ -34,7 +34,7 @@ export default function RootLayout({children}) {
     return (
         <html lang="en">
         <body
-            className={`${inter.className} ${iranYekanFont.variable} ${iranYekanRegFont.variable} w-screen overflow-x-clip px-10`}>
+            className={`${inter.className} ${iranYekanFont.variable} ${iranYekanRegFont.variable} w-screen overflow-x-clip`}>
         <Providers>
             <MainHeader />
             <NavigationMenu />

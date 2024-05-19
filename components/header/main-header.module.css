@@ -1,0 +1,24 @@
+.mainHeader {
+    display: grid;
+    grid-template-columns: [profile-start] 14% [profile-end calculator-start] 5% [calculator-end doldor-start] auto [doldor-end status-start] 12% [status-end clock-start] 10% [clock-end date-start] 10% [date-end];
+    grid-gap: 1rem;
+
+    & > *:nth-child(1) {
+        grid-column: profile;
+    }
+    & > *:nth-child(2) {
+        grid-column: calculator;
+    }
+    & > *:nth-child(3) {
+        grid-column: doldor;
+    }
+    & > *:nth-child(4) {
+        grid-column: status;
+    }
+    & > *:nth-child(5) {
+        grid-column: clock;
+    }
+    & > *:nth-child(6) {
+        grid-column: date;
+    }
+}

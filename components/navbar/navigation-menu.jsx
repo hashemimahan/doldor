@@ -3,30 +3,36 @@ import NavigationItems from "@/components/navbar/navigation-items";
 
 const items = [
     {
-        name: "مدیریت"
+        name: "مدیریت",
+        link: "/admin"
     },
     {
-        name: "دریافت و انتقال"
+        name: "دریافت و انتقال",
+        link: "/import"
     },
     {
-        name: "کالاها"
+        name: "کالاها",
+        link: "/products"
     },
     {
-        name: "آنلاین"
+        name: "آنلاین",
+        link: "/online"
     },
     {
-        name: "صندوق"
+        name: "صندوق",
+        link: "/receipt"
     },
     {
-        name: "پیک"
+        name: "پیک",
+        link: "/peike"
     },
 ]
 const NavigationMenu = () => {
     return (
-        <nav className={"w-full h-[6rem] bg-amber-300 flex justify-end font-iranYekan font-bold"}>
-            <ul className={"w-auto h-full flex flex-nowrap gap-8"}>
-                {items.reverse().map((item, index) => {
-                    return <NavigationItems key={index}>{item.name}</NavigationItems>
+        <nav className={"w-full h-[6rem] bg-doldor_orange flex justify-end font-iranYekan font-bold"}>
+            <ul className={"w-auto h-full flex flex-row-reverse flex-nowrap gap-8"}>
+                {items.map((item, index) => {
+                    return <NavigationItems key={index} link={item.link}>{item.name}</NavigationItems>
                 })}
             </ul>
         </nav>

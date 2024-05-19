@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 const Select = ({ options, onSelect, code, unit }) => {
   return (
     <label
-      className={`w-full h-full select font-iranYekan font-black text-lg`}
+      className={`w-full h-full select font-iranYekan font-black text-lg text-black`}
       htmlFor="slct"
     >
       <select

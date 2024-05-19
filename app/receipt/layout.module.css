@@ -11,13 +11,11 @@
 }
 .box1 {
     grid-area: box1;
-    background-color: #fc112f;
 }
 .box2 {
     grid-area: box2;
-    background-color: #0c112f;
+    background: #80DBB9;
 }
 .box3 {
     grid-area: box3;
-    background-color: #5c110f;
 }

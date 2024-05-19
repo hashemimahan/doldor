@@ -9,8 +9,8 @@ const {setItem : setItems, getItem : getItems, removeItem: removeItems} = useLoc
 let number = getNumber()
 let items = getItems()
 const initialState = {
-    number,
-    items,
+    number: number ?? 0,
+    items: items ?? [],
 }
 export const salesInvoiceSlice = createSlice({
     name: "counter",

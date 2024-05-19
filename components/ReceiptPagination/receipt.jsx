@@ -11,13 +11,12 @@ const Receipt = () => {
     const {receiptId} = useParams();
     const num = useSelector((state) => state.counter.number);
     const item = useSelector((state) => state.counter.items);
-    console.log(receiptId);
 
     let count = 1;
     if (receiptId !== undefined && receiptId >= 1) {
         count = Number(receiptId);
     } else {
-        count = num;
+        count = 0;
     }
     // const count = useSelector((state) => state.counter.number);
     const dispatch = useDispatch();

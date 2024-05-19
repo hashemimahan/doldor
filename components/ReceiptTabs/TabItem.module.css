@@ -1,3 +1,6 @@
 .active {
-    @apply bg-doldor_orange border border-slate-900;
+    @apply bg-doldor_orange;
+}
+.tabItem {
+    @apply bg-doldor_button_bg;
 }

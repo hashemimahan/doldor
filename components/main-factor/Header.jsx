@@ -15,7 +15,7 @@ const Header = () => {
         <li className="flex flex-row-reverse bg-white justify-center items-center border-l-2 flex-grow">
           <p className="text-center">درصد تخفیف</p>
         </li>
-        <li className="flex flex-row-reverse bg-white justify-center items-center border-l-2 flex-grow">
+        <li className="flex flex-row-reverse bg-white justify-center items-center flex-grow">
           <p className="text-center">تخفیف مبلغی</p>
         </li>
       </ul>

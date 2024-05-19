@@ -10,7 +10,7 @@ function Modal({ unit, maxValue, onClose, customerId, productCode }) {
   const onSubmitFormHandler = (event) => {
     event.preventDefault();
     if (Number(number) <= 0 || !number) {
-      toast("کاربر عزیز لطفا عددی مثبت و بالاتر از صفر وارد کنید00000000")
+      toast("کاربر عزیز لطفا عددی مثبت و بالاتر از صفر وارد کنید")
       return
     }
     let modifiedNumber = number.replace(/^0+/, "");
