@@ -1,83 +1,58 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PopularCategoryItem from "./PopularCategoryItem";
 import classes from "./PopularCategory.module.css";
 import { addNewProduct } from "@/reducers/sales-invoice";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
+import { myHeaders, urlencoded } from "@/libs/utility";
+import PopularCategorySubItem from "./PopularCategorySubItem";
 
 const PopularCategory = () => {
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [productsDiscount, setProductsDiscount] = useState([]);
   const { receiptId } = useParams();
   let dispatch = useDispatch();
 
-  const addItem1 = () => {
-    let newItem = {
-      customerId: +receiptId,
-      productCode: 9875463110,
-      productsDetail: {
-        code: 9875463110,
-        barCode: 12345667,
-        product: "سیروپیاز",
-        number: 1,
-        unit: "number",
-        price: 100000,
-        pricePerOne: 100000,
-        discount: 15000,
-        discountPerOne: 15000,
-        totalAmount: 85000,
-        stock: 5,
-        tsw: 6,
-      },
-      // id: 1
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow"
     };
-    dispatch(addNewProduct(newItem));
-  };
+    fetch("https://doldor.com/api/v1/category/fetch/5", requestOptions)
+    .then((response) => response.text())
+    .then((result) => {
+      let cat = JSON.parse(result);
+      setCategories(cat.categories);
+    })
+    .catch((error) => console.error(error));
+  }, []);
 
-  const addItem2 = () => {
-    let newItem = {
-      customerId: +receiptId,
-      productCode: 1234656789,
-      productsDetail: {
-        code: 1234656789,
-        barCode: 12345667,
-        product: "خیار",
-        number: 1,
-        unit: "number",
-        price: 50000,
-        pricePerOne: 50000,
-        discount: 5000,
-        discountPerOne: 5000,
-        totalAmount: 45000,
-        stock: 5,
-        tsw: 6,
-      },
-      // id: 1
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow"
     };
-    dispatch(addNewProduct(newItem));
-  };
+    
+    fetch("https://doldor.com/api/v1/product/fetch/10", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        let pdt = JSON.parse(result);
+        setProducts(pdt.products);
+      })
+      .catch((error) => console.error(error));
 
-  const addItem3 = () => {
-    let newItem = {
-      customerId: +receiptId,
-      productCode: 789321000,
-      productsDetail: {
-        code: 789321000,
-        barCode: 12345667,
-        product: "ماست",
-        number: 1,
-        unit: "number",
-        price: 90000,
-        pricePerOne: 90000,
-        discount: 10000,
-        discountPerOne: 10000,
-        totalAmount: 80000,
-        stock: 7,
-        tsw: 8,
-      },
-      // id: 1
-    };
-    dispatch(addNewProduct(newItem));
-  };
+      fetch("https://doldor.com/api/v1/productDiscount/fetch/10", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          let prDiscount = JSON.parse(result);
+          setProductsDiscount(prDiscount.discounts);
+        })
+        .catch((error) => console.error(error));
+  }, [])
 
   return (
     <section
@@ -88,14 +63,17 @@ const PopularCategory = () => {
         <header className="border-[0.1rem] border-doldor_orange bg-white grid place-content-center">
           دسته بندی اصلی
         </header>
+        {categories.map((item, i) => <PopularCategoryItem key={item?.id ?? crypto.randomUUID()} name={item?.name} />)}
       </div>
       <div className={`${classes.subCategory}`}>
         <header className="border-[0.1rem] border-doldor_orange bg-white grid place-content-center">
           زیر دسته بندی
         </header>
-        <PopularCategoryItem onAdd={addItem1} name={"سیر"} />
-        <PopularCategoryItem onAdd={addItem2} name={"خیار"} />
-        <PopularCategoryItem onAdd={addItem3} name={"ماست"} />
+        {products.map(product => {
+          return (
+            <PopularCategorySubItem key={product.id+Math.random().toString(32)} receiptId={receiptId} {...product} discounts={productsDiscount} />
+          )
+        })}
       </div>
     </section>
   );
