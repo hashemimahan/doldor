@@ -6,7 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --background-primary: #FFFFFF;
+  --background-primary: #ffffff;
 }
 
 html {
@@ -39,46 +39,122 @@ body {
   .tableRows {
     @apply text-2xl font-iranYekan font-black;
   }
-  
-}
+  .common {
+    @apply font-iranYekan font-black text-lg;
+  }
 
+  input[type="radio"] {
+    --s: 1em; /* control the size */
+    --c: #009688; /* the active color */
 
-table tfoot tr:nth-child(2){
-  background-color: #D2D2D2;
-  
+    height: var(--s);
+    aspect-ratio: 1;
+    border: calc(var(--s) / 8) solid #939393;
+    padding: calc(var(--s) / 8);
+    background: radial-gradient(farthest-side, var(--c) 94%, #0000) 50%/0 0
+      no-repeat content-box;
+    border-radius: 50%;
+    outline-offset: calc(var(--s) / 10);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    font-size: inherit;
+    transition: 0.3s;
+  }
+  input[type="radio"]:checked {
+    border-color: var(--c);
+    background-size: 100% 100%;
+  }
+
+  input[type="radio"]:disabled {
+    background: linear-gradient(#939393 0 0) 50%/100% 20% no-repeat content-box;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+  }
+
+  .scroll_gutter {
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .scrollbar {
+    height: 300px;
+    width: 50%;
+    overflow: auto;
+    padding: 0 10px;
+  }
+  /*       ScrollBar 1        */
+
+  #scrollbar1::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #scrollbar1::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+  }
+
+  #scrollbar1::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    background-color: #E96C59;
+  }
+
+  @media print {
+    .no-print {
+      display: none;
+    }
+  }
 }
-table, th:nth-child(4) {
-  
+table tfoot tr:nth-child(2) {
+  background-color: #d2d2d2;
 }
-table tbody tr:nth-child(odd){
-  background-color: #BFBDBD;
+table,
+th:nth-child(4) {
 }
-table, th, td{
+table tbody tr:nth-child(odd) {
+  background-color: #bfbdbd;
+}
+table,
+th,
+td {
   border: 2px solid black;
   border-collapse: collapse;
-      
 }
-table td,table th:not(:first-child) {
+table td,
+table th:not(:first-child) {
   text-align: center;
   &:not(:first-child, :nth-child(10), :nth-child(5)) {
     padding-inline: 18px;
     padding-block: 10px;
   }
 }
-tbody tr td:nth-child(1), tfoot th:nth-child(1){
-color: red;
+tbody tr td:nth-child(1),
+tfoot th:nth-child(1) {
+  color: red;
 }
-tbody tr td:nth-child(1){
-text-decoration: underline;
+tbody tr td:nth-child(1) {
+  text-decoration: underline;
 }
-tbody tr td:nth-child(6),tfoot th:nth-child(2){
-color: blue;
-/* outline: 2px solid black;
+tbody tr td:nth-child(6),
+tfoot th:nth-child(2) {
+  color: blue;
+  /* outline: 2px solid black;
 outline-offset: -10px; */
 }
 
 caption {
-  background-color: #3FC398;
+  background-color: #3fc398;
   padding: 15px;
   border-radius: 4px;
   font-size: 26px;
@@ -86,14 +162,14 @@ caption {
 
 .select select {
   /* -webkit-appearance: none; */
-padding: 6px 0px;
-width: 100%;
-border: 1px solid #e8eaed;
-border-radius: 5px;
-background: #fff;
-box-shadow: 0 1px 3px -2px #9098a9;
-cursor: pointer;
-transition: all 150ms ease;
+  padding: 6px 0px;
+  width: 100%;
+  border: 1px solid #e8eaed;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 3px -2px #9098a9;
+  cursor: pointer;
+  transition: all 150ms ease;
 }
 .select select:required:invalid {
   color: #5a667f;
@@ -107,9 +183,8 @@ transition: all 150ms ease;
 .select select:focus {
   outline: none;
   border-color: #07f;
-  box-shadow: 0 0 0 2px rgba(0,119,255,0.2);
+  box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
 }
-
 
 /* Loader */
 .loader {
@@ -124,45 +199,69 @@ transition: all 150ms ease;
   top: 50%;
   left: 50%;
   transform: translateZ(0);
-  animation: mltShdSpin 1.7s infinite ease, round 1.7s infinite ease;
+  animation:
+    mltShdSpin 1.7s infinite ease,
+    round 1.7s infinite ease;
 }
 
 @keyframes mltShdSpin {
   0% {
-    box-shadow: 0 -0.83em 0 -0.4em,
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
   5%,
   95% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
   10%,
   59% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, 
-    -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.087em -0.825em 0 -0.42em,
+      -0.173em -0.812em 0 -0.44em,
+      -0.256em -0.789em 0 -0.46em,
+      -0.297em -0.775em 0 -0.477em;
   }
   20% {
-    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
-     -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, 
-     -0.749em -0.34em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.338em -0.758em 0 -0.42em,
+      -0.555em -0.617em 0 -0.44em,
+      -0.671em -0.488em 0 -0.46em,
+      -0.749em -0.34em 0 -0.477em;
   }
   38% {
-    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
-     -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, 
-     -0.82em -0.09em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      -0.377em -0.74em 0 -0.42em,
+      -0.645em -0.522em 0 -0.44em,
+      -0.775em -0.297em 0 -0.46em,
+      -0.82em -0.09em 0 -0.477em;
   }
   100% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 
-    0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow:
+      0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em,
+      0 -0.83em 0 -0.477em;
   }
 }
 
 @keyframes round {
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
- 

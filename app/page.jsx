@@ -1,8 +1,4 @@
-import useLocalStorage from "@/hooks/useLocalStarage";
-import { getRoles } from "@/libs/get-roles";
-
-export default async function Home() {
-  const {setItem, getItem, removeItem} = useLocalStorage('token')
+export default function Home() {
   /* const myHeaders = new Headers();
 myHeaders.append("Accept", "application/json");
 myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -24,7 +20,7 @@ fetch("https://doldor.com/api/v1/login", requestOptions)
     let {authorisation} = JSON.parse(result);
   })
   .catch((error) => console.error(error)); */
-
+  
   return (
     <main className="grid place-content-center">
       

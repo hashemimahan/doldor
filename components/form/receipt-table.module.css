@@ -11,7 +11,7 @@
         text-align: center;
         display: grid;
         grid-template-columns: [select-start] 4% [select-end code-start] 7% [code-end barcode-start] 10% [barcode-end product-start] auto [product-end number-start] 6% [number-end unit-start] 6% [unit-end price-start] 10% [price-end discount-start] 12% [discount-end amount-start] 8% [amount-end stock-start] 5% [stock-end remove-start] 4% [remove-end];
-        grid-template-rows: 4rem;
+        grid-template-rows: 3rem;
         border-bottom: 1px solid #000000;
 
         & > * {

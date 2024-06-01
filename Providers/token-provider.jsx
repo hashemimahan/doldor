@@ -1,11 +1,26 @@
-'use client'
-import { getRole, getToken, getUserId } from '@/reducers/token-slice';
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import {myHeaders as headers} from '@/libs/utility'
+"use client";
+import { getUser } from "@/libs/data";
+import { getRole, getToken, getUserId } from "@/reducers/token-slice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 function TokenProvider() {
-    const tk = useSelector(state => state.token.token);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const { id, token, role } = await getUser();
+      dispatch(getToken(token));
+      dispatch(getUserId(id));
+      dispatch(getRole(role));
+    };
+    try {
+      getUserData();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+  /* const tk = useSelector(state => state.token.token);
     const id = useSelector(state => state.token.userId);
     const dispatch = useDispatch();
 
@@ -52,9 +67,9 @@ function TokenProvider() {
         if (id) {
             getUserPermission()
         }
-    }, [id])
+    }, [id]) */
 
-  return null
+  return null;
 }
 
 export default TokenProvider

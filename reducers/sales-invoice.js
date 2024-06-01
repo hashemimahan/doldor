@@ -1,4 +1,4 @@
-"use client";
+
 import { createSlice, current } from "@reduxjs/toolkit";
 import { FaTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
@@ -6,10 +6,11 @@ import useLocalStorage from "../hooks/useLocalStarage";
 
 
 const {setItem, getItem, removeItem} = useLocalStorage('customers');
-/* از اینجا ................ */
+const {setItem: setTabs, getItem: getTabs, removeItem: removeTabs} = useLocalStorage('tabs');
 const savedProducts = getItem();
 const initialState = {
   customers: savedProducts ?? [],
+  tabItems: [],
 };
 export const salesInvoice = createSlice({
   name: "salesInvoice",
@@ -62,6 +63,7 @@ export const salesInvoice = createSlice({
           state.customers[findCustomer].totalNumber++;
         !!existedProductItem?.weight &&
           state.customers[findCustomer].totalWeight++;
+         state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice; //*** */
       } else {
         state.customers[findCustomer].products.push(
           action.payload.productsDetail
@@ -77,6 +79,7 @@ export const salesInvoice = createSlice({
           state.customers[findCustomer].totalNumber++;
         !!action.payload.productsDetail?.weight &&
           state.customers[findCustomer].totalWeight++;
+          state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice;
       }
       setItem(state.customers)
     },
@@ -120,8 +123,8 @@ export const salesInvoice = createSlice({
         state.customers[findCustomer].totalNumber++;
       !!existedProductItem.weight &&
         state.customers[findCustomer].totalWeight++;
-
-        setItem(current(state.customers))
+      state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice;      
+      setItem(current(state.customers))
     },
     decrease: (state, action) => {
       removeItem("customers")
@@ -148,6 +151,7 @@ export const salesInvoice = createSlice({
           state.customers[findCustomer].totalNumber--;
         !!existedProductItem.weight &&
           state.customers[findCustomer].totalWeight--;
+        state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice;
         state.customers[findCustomer].products.splice(
           existedProductItemIndex,
           1
@@ -172,7 +176,6 @@ export const salesInvoice = createSlice({
       } else if (existedProductItem.unit === "weight") {
         delete existedProductItem.number
       } */
-      console.log(current(existedProductItem));
       state.customers[findCustomer].products[existedProductItemIndex] =
         updatedProductItem;
       // state.customers[findCustomer].totalPrice -= state.customers[findCustomer].products[existedProductItemIndex].price;
@@ -186,8 +189,9 @@ export const salesInvoice = createSlice({
         state.customers[findCustomer].totalNumber--;
       !!existedProductItem.weight &&
         state.customers[findCustomer].totalWeight--;
+      state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice;
 
-        setItem(current(state.customers))
+      setItem(current(state.customers))
     },
     removeProductItem: (state, action) => {
       removeItem("customers")
@@ -214,6 +218,7 @@ export const salesInvoice = createSlice({
       state.customers[findCustomer].totalWeight -=
         state.customers[findCustomer].products[existedProductItemIndex]
           ?.weight || 0;
+      state.customers[findCustomer].totalAmountPayable = state.customers[findCustomer].totalPrice;
       state.customers[findCustomer].products.splice(existedProductItemIndex, 1);
 
       setItem(current(state.customers))
@@ -228,7 +233,6 @@ export const salesInvoice = createSlice({
         (item) => item.customerId === +action.payload
       );
       state.customers.splice(findCustomerIndex, 1);
-
       setItem(current(state.customers));
     },
     removeAllProducts: (state, action) => {
@@ -252,6 +256,7 @@ export const salesInvoice = createSlice({
       state.customers[findCustomerIndex].totalPrice = 0;
       state.customers[findCustomerIndex].totalNumber = 0;
       state.customers[findCustomerIndex].totalWeight = 0;
+      state.customers[findCustomerIndex].totalAmountPayable = 0;
 
       setItem(current(state.customers))
     },
@@ -315,14 +320,11 @@ export const salesInvoice = createSlice({
       let existedProductItem =
         state.customers[findCustomerIndex].products[existedProductItemIndex];
       let existedCustomer = state.customers[findCustomerIndex];
-      console.log(action.payload);
-      console.log(current(existedCustomer));
-      console.log(current(existedProductItem));
 
       let enteredNumber = action.payload.number || action.payload.weight;
 
       if (existedProductItem.tsw < enteredNumber) {
-        toast("jjjjjjموجودی کل انبار: " + existedProductItem.tsw);
+        toast("موجودی کل انبار: " + existedProductItem.tsw);
         return;
       }
       if (!!action.payload.weight) {
@@ -347,12 +349,9 @@ export const salesInvoice = createSlice({
             // existedCustomer.totalDiscount = existedCustomer.products.reduce((sum, product) => sum + (product.discountPerOne * product.weight), 0);
             // existedCustomer.totalPrice = existedCustomer.products.reduce((sum, product) => sum + product.totalAmount, 0);
   
-            console.log("weight");
         } else {
-            console.log(existedCustomer);
-            console.log(existedProductItem);
           toast(
-            "aaaaaaموجودی انبار: " +
+            "موجودی انبار: " +
               (existedProductItem.stock + existedProductItem.weight)
           );
         }
@@ -376,24 +375,20 @@ export const salesInvoice = createSlice({
         //   existedCustomer.totalAmount = existedCustomer.products.reduce((sum, product) => sum + (product.pricePerOne * product.number), 0);
         //   existedCustomer.totalDiscount = existedCustomer.products.reduce((sum, product) => sum + (product.discountPerOne * product.number), 0);
             // existedCustomer.totalPrice = existedCustomer.products.reduce((sum, product) => sum + product.totalAmount, 0);
-
-            console.log("number");
         } else {
-            console.log(existedCustomer);
-            console.log(existedProductItem);
           toast(
-            "bbbbbbbbموجودی انبار: " +
+            "موجودی انبار: " +
               (existedProductItem.stock + existedProductItem.number)
           );
         }
       }
       existedCustomer.totalAmount = existedCustomer.products.reduce((sum, product) => sum + (product.pricePerOne * (product.number || product.weight)), 0);
       existedCustomer.totalDiscount = existedCustomer.products.reduce((sum, product) => sum + (product.discountPerOne * (product.number || product.weight)), 0);
-    existedCustomer.totalPrice = existedCustomer.products.reduce((sum, product) => sum + product.totalAmount, 0);
+      existedCustomer.totalPrice = existedCustomer.products.reduce((sum, product) => sum + product.totalAmount, 0);
 
-    existedCustomer.totalWeight = existedCustomer.products.reduce((sum, product) => sum + (product.weight || 0), 0)
-    existedCustomer.totalNumber = existedCustomer.products.reduce((sum, product) => sum + (product.number || 0), 0)
-
+      existedCustomer.totalWeight = existedCustomer.products.reduce((sum, product) => sum + (product.weight || 0), 0)
+      existedCustomer.totalNumber = existedCustomer.products.reduce((sum, product) => sum + (product.number || 0), 0)
+      existedCustomer.totalAmountPayable = existedCustomer.totalPrice;
 
     setItem(current(state.customers))
     },
@@ -413,6 +408,58 @@ export const salesInvoice = createSlice({
         existedProductItemIndex
       ].modal = action.payload.isShow;
     },
+    addDiscount: (state, action) => {
+      // removeItem("customers")
+      const customers = current(state.customers);
+      let findCustomerIndex = customers.findIndex(
+        (item) => item.customerId === action.payload.customerId
+      );
+      if (action.payload.typeDiscount === "percent") {
+        state.customers[findCustomerIndex].totalAmountPayable = state.customers[findCustomerIndex].totalPrice - (state.customers[findCustomerIndex].totalPrice * action.payload.discount) / 100;
+        return
+      }
+      state.customers[findCustomerIndex].totalAmountPayable = state.customers[findCustomerIndex].totalPrice - action.payload.discount;
+      // setItem(current(state.customers))
+    },
+    addTabItems: (state, action) => {
+      removeTabs()
+      const tabItems = current(state.tabItems);
+
+      state.tabItems.push(action.payload);
+
+      setTabs(state.tabItems)
+    },
+    removeTabItem: (state, action) => {
+      removeTabs()
+      const tabItems = current(state.tabItems);
+
+      const findExistedItemIndex = tabItems.findIndex(item => item.id === action.payload);
+
+      state.tabItems.splice(findExistedItemIndex, 1);
+
+      setTabs(state.tabItems)
+    },
+    removeProductDiscount: (state, action) => {
+      let customers = current(state.customers);
+      let findCustomerIndex = customers.findIndex(
+        (item) => item.customerId === action.payload
+      );
+      let existedCustomer = state.customers[findCustomerIndex];
+
+      if (existedCustomer?.products.length === 0) {
+        toast.error('هیچ محصولی وجود ندارد!')
+        return
+      }
+      let ttp = existedCustomer.totalPrice;
+      let tap = existedCustomer.totalAmountPayable
+      if (ttp === tap) {
+        toast.error("تخفیفی بر روی فاکتور اعمال نشده است!")
+        return
+      }
+      
+
+      existedCustomer.totalAmountPayable = existedCustomer.totalPrice;
+    }
   },
 });
 
@@ -427,5 +474,9 @@ export const {
   removeAllProducts,
   changeUnit,
   toggleModal,
+  addDiscount,
+  addTabItems,
+  removeTabItem,
+  removeProductDiscount,
 } = salesInvoice.actions;
 export default salesInvoice.reducer;

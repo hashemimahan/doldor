@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { getCookie } from 'cookies-next';
 import PopularCategoryItem from "./PopularCategoryItem";
 import classes from "./PopularCategory.module.css";
 import { addNewProduct } from "@/reducers/sales-invoice";
@@ -7,15 +8,20 @@ import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { myHeaders, urlencoded } from "@/libs/utility";
 import PopularCategorySubItem from "./PopularCategorySubItem";
+import useLocalStorage from "@/hooks/useLocalStarage";
+import {getData} from "@/libs/data";
 
 const PopularCategory = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [productsDiscount, setProductsDiscount] = useState([]);
-  const { receiptId } = useParams();
-  let dispatch = useDispatch();
+  const [categoryId, setCategoryId] = useState(null);
 
-  useEffect(() => {
+  const { receiptId } = useParams();
+
+  const token = getCookie("token") ?? "";
+  /*useEffect(() => {
+    myHeaders.append("Authorization", "Bearer "+token);
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
@@ -28,31 +34,19 @@ const PopularCategory = () => {
       setCategories(cat.categories);
     })
     .catch((error) => console.error(error));
-  }, []);
+  }, []);*/
 
   useEffect(() => {
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-    
-    fetch("https://doldor.com/api/v1/product/fetch/10", requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        let pdt = JSON.parse(result);
-        setProducts(pdt.products);
-      })
-      .catch((error) => console.error(error));
+    getData(token).then(res => {
+      setCategories(res.categories.categories)
+      setProducts(res.products.products)
+      setProductsDiscount(res.productsDiscount.discounts)
+    })
+  }, [token]);
 
-      fetch("https://doldor.com/api/v1/productDiscount/fetch/10", requestOptions)
-        .then((response) => response.text())
-        .then((result) => {
-          let prDiscount = JSON.parse(result);
-          setProductsDiscount(prDiscount.discounts);
-        })
-        .catch((error) => console.error(error));
-  }, [])
+  const onSetCategoryFilterHandler = (id) => {
+    setCategoryId(id)
+  }
 
   return (
     <section
@@ -60,16 +54,20 @@ const PopularCategory = () => {
       dir="rtl"
     >
       <div className={`${classes.mainCategory}`}>
-        <header className="border-[0.1rem] border-doldor_orange bg-white grid place-content-center">
+        <header className="rounded-lg border-doldor_orange bg-gray-900 text-slate-100 grid place-content-center">
           دسته بندی اصلی
         </header>
-        {categories.map((item, i) => <PopularCategoryItem key={item?.id ?? crypto.randomUUID()} name={item?.name} />)}
+        {categories?.length > 0 ? categories.map((item, i) => <PopularCategoryItem key={item?.id ?? crypto.randomUUID()} name={item?.name} onSet={onSetCategoryFilterHandler} id={item.id} />) : null}
       </div>
       <div className={`${classes.subCategory}`}>
-        <header className="border-[0.1rem] border-doldor_orange bg-white grid place-content-center">
+        <header className="rounded-lg border-doldor_orange bg-rose-700 text-slate-100 grid place-content-center">
           زیر دسته بندی
         </header>
-        {products.map(product => {
+        {!categoryId ? products?.map(product => {
+          return (
+            <PopularCategorySubItem key={product.id+Math.random().toString(32)} receiptId={receiptId} {...product} discounts={productsDiscount} />
+          )
+        }) : products.filter(item => item.id === categoryId).map(product => {
           return (
             <PopularCategorySubItem key={product.id+Math.random().toString(32)} receiptId={receiptId} {...product} discounts={productsDiscount} />
           )

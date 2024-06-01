@@ -3,6 +3,7 @@ import { createSlice, current } from "@reduxjs/toolkit";
 
 const {setItem, getItem, removeItem} = useLocalStorage('token');
 const {setItem: setRoles, getItem: getRoles, removeItem: removeRoles} = useLocalStorage('roles');
+const {setItem: setUserId, getItem: getUserID, removeItem: removeUserId} = useLocalStorage("userId");
 
 let existingToken = getItem();
 
@@ -25,7 +26,9 @@ export const token = createSlice({
             setRoles(action.payload)
         },
         getUserId: (state, action) => {
+            removeUserId()
             state.userId = action.payload
+            setUserId(action.payload)
         }
     },
 })

@@ -29,7 +29,7 @@ const items = [
 ]
 const NavigationMenu = () => {
     return (
-        <nav className={"w-full h-[6rem] bg-doldor_orange flex justify-end font-iranYekan font-bold"}>
+        <nav className={"w-full h-[4rem] bg-doldor_orange flex justify-end font-iranYekan font-bold"}>
             <ul className={"w-auto h-full flex flex-row-reverse flex-nowrap gap-8"}>
                 {items.map((item, index) => {
                     return <NavigationItems key={index} link={item.link}>{item.name}</NavigationItems>

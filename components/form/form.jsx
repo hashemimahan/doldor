@@ -32,7 +32,7 @@ const headings = [
   "حذف",
 ];
 
-const options = [
+export const options = [
   { value: "number", label: "عدد" },
   { value: "kilo", label: "کیلو" },
 ];

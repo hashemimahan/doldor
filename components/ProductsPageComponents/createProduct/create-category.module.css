@@ -1,0 +1,10 @@
+
+.inp:has(+ input:required)::before {
+  content: "*";
+  position: absolute;
+  top: 50%;
+  left: -1rem;
+  color: rgb(127 ,29 ,29);
+  translate: -50% -50%;
+  font-size: 2rem;
+}

@@ -30,7 +30,7 @@ function PopularCategorySubItem({name, receiptId, sellPrice, unit, id, discounts
     }
 
   return (
-    <div className={'text-2xl font-bold font-iranYekanRegular bg-emerald-900 text-white rounded-lg border p-2 cursor-pointer'} onClick={onAddProductHandler}>{name || "hi"}</div>
+    <div className={'text-lg text-center font-bold font-iranYekanRegular bg-white text-neutral-500 rounded-lg border border-b-[0.3rem] border-b-rose-800 p-2 cursor-pointer'} onClick={onAddProductHandler}>{name || "hi"}</div>
   )
 }
 

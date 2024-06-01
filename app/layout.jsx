@@ -38,7 +38,7 @@ export default function RootLayout({children}) {
         <Providers>
             <MainHeader />
             <NavigationMenu />
-            <SalesLayout />
+            {/* <SalesLayout /> */}
             {children}
         </Providers>
         </body>

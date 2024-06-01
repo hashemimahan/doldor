@@ -1,0 +1,77 @@
+.table {
+    display: grid;
+    grid-template-columns:
+    [select-start] 2%
+    [select-end row-start] 2%
+    [row-end un-start] 2%
+    [un-end code-start] 4%
+    [code-end barcode-start] 6%
+    [barcode-end productName-start] auto
+    [productName-end stock-start] 12%
+    [stock-end unit-start] 4%
+    [unit-end buy-start] 6%
+    [buy-end sell-start] 10%
+    [sell-end discount-start] 6%
+    [discount-end siteP-start] 10%
+    [siteP-end siteD-start] 6%
+    [siteD-end];
+    grid-template-rows: 4rem;
+    border-block: 1px solid #000000;
+
+    & > * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & > *:not(:first-child) {
+        border-left: 1px solid #000000;
+    }
+
+    & > *:first-child {
+        grid-column: select;
+        writing-mode: vertical-lr;
+        transform: rotateX(180deg) rotateY(180deg);
+    }
+    & > *:nth-child(2) {
+        grid-column: row;
+        writing-mode: vertical-lr;
+        transform: rotateX(180deg) rotateY(180deg);
+    }
+    & > *:nth-child(3) {
+        grid-column: un;
+        writing-mode: vertical-lr;
+        transform: rotateX(180deg) rotateY(180deg);
+        border-right: 1px solid #000000;
+    }
+    & > *:nth-child(4) {
+        grid-column: code;
+    }
+    & > *:nth-child(5) {
+        grid-column: barcode;
+    }
+    & > *:nth-child(6) {
+        grid-column: productName;
+    }
+    & > *:nth-child(7) {
+        grid-column: stock;
+    }
+    & > *:nth-child(8) {
+        grid-column: unit;
+    }
+    & > *:nth-child(9) {
+        grid-column: buy;
+    }
+    & > *:nth-child(10) {
+        grid-column: sell;
+    }
+    & > *:nth-child(11) {
+        grid-column: discount;
+    }
+    & > *:nth-child(12) {
+        grid-column: siteP;
+    }
+    & > *:nth-child(13) {
+        grid-column: siteD;
+    }
+}

@@ -1,6 +1,32 @@
 .active {
-    @apply bg-doldor_orange;
+    @apply bg-rose-500 text-white;
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -45px;
+        width: 45px;
+        height: 45px;
+        background: transparent;
+        border-bottom-right-radius: 20px;
+        box-shadow: 18px 4px 0 -4px #F43F5E;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: -45px;
+        width: 45px;
+        height: 45px;
+        background: transparent;
+        border-bottom-left-radius: 20px;
+        box-shadow: -18px 4px 0 -4px #F43F5E;
+    }
 }
 .tabItem {
-    @apply bg-doldor_button_bg;
+    @apply border-[0.1rem];
+
+}
+.iconActive {
+    @apply text-white;
 }

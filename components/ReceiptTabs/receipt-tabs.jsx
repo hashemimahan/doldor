@@ -5,7 +5,7 @@ import TabItems from "@/components/ReceiptTabs/TabItems";
 import {useParams, useRouter} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
 import {addReceiptItem} from "@/reducers/sales-invoice-slice";
-import {addCustomers, removeProduct} from "@/reducers/sales-invoice";
+import {addCustomers, addTabItems, removeProduct} from "@/reducers/sales-invoice";
 import useLocalStorage from '@/hooks/useLocalStarage';
 
 
@@ -13,43 +13,45 @@ const ReceiptTabs = () => {
     const dispatch = useDispatch();
     const {receiptId} = useParams();
     const router = useRouter();
-    const {setItem, getItem, removeItem} = useLocalStorage("tabs-items");
+    const {getItem} = useLocalStorage("tabs");
     let savedItems = getItem();
     const items = useSelector(state => state.counter.items);
+    const customers = useSelector((state) => state.salesInvoice.customers);
+    const tabs = useSelector((state) => state.salesInvoice.tabItems);
+    let findLastCustomerId = customers?.findLast(item => item.customerId > 0)?.customerId || 0;
 
-    let existedItems = savedItems ?? items;
+    let existedItems = savedItems ?? tabs;
 
-    const onRemoveReceiptItemHandler = (id) => {
-        const newReceiptItems = receiptItems.filter(item => item.id !== id);
-        setReceiptItems(newReceiptItems);
-    }
     return (
-        <div className={"flex flex-row flex-nowrap gap-2 py-4"}>
-            <ul className={"flex flex-row flex-nowrap gap-4 w-max"}>
+        <div className={"flex flex-row flex-nowrap gap-2 py-2"}>
+            <ul className={"flex flex-row flex-nowrap gap-8 w-max"}>
                 {(existedItems && existedItems.length > 0) ? existedItems.map((item, index) => {
-                    return <TabItems key={item.id} title={item.title} cast={item.cast} id={item.id} onRemove={onRemoveReceiptItemHandler}/>
+                    return <TabItems key={item.id} title={item.title} cast={item.cast} id={item.id}/>
                 }) : undefined}
+                {/* {tabs?.map(item => <TabItems key={item.id} title={item.title} cast={item.cast} id={item.id} onRemove={onRemoveReceiptItemHandler}/>)} */}
             </ul>
-            <button className={"hover:text-doldor_orange"} onClick={() => {
+            <button className={"hover:text-doldor_orange relative z-[10000000]"} onClick={() => {
                 let newItem = {
                     title: "مشتری جدید",
                     cast: 1,
-                    id: items.length + 1,
+                    id: findLastCustomerId + 1,
                 };
                 let newCustomer = {
-                    customerId: newItem.id,
+                    customerId: findLastCustomerId + 1,
                     products: [],
                     totalPrice: 0,
                     totalDiscount: 0,
                     totalAmount: 0,
                     totalNumber: 0,
                     totalWeight: 0,
+                    totalAmountPayable: 0,
                   };
-                dispatch(addReceiptItem(newItem))
+                // dispatch(addReceiptItem(newItem))
+                dispatch(addTabItems(newItem))
                 dispatch(addCustomers(newCustomer))
-                router.push(`/receipt/${newItem.id}`);
+                router.push(`/receipt/${newCustomer.customerId}`);
             }}>
-                <FaPlus size={"1.6rem"}/>
+                <FaPlus size={"1.6rem"} className={"text-doldor_text hover:text-doldor_orange"}/>
             </button>
         </div>
     );

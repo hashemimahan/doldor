@@ -1,10 +1,16 @@
-"use client"
-import React from 'react';
+import React from "react";
 
-const PopularCategoryItem = ({name}) => {
-    return (
-        <div className={'text-2xl font-bold font-iranYekanRegular bg-slate-700 text-white rounded-lg border p-2 cursor-pointer'}>{name || "hi"}</div>
-    );
+const PopularCategoryItem = ({ name, onSet, id }) => {
+  return (
+    <div
+      className={
+        "text-lg font-bold font-iranYekanRegular bg-white text-neutral-500 rounded-lg border border-b-[0.3rem] border-b-slate-900 p-2 cursor-pointer"
+      }
+      onClick={() => onSet(id)}
+    >
+      {name || "hi"}
+    </div>
+  );
 };
 
 export default PopularCategoryItem;

@@ -1,4 +1,4 @@
-'use client';
+
 import useLocalStorage from "@/hooks/useLocalStarage";
 import {createSlice} from "@reduxjs/toolkit";
 
